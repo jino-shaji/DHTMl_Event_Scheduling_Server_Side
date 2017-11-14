@@ -1,4 +1,4 @@
-# Hotel Room Booking demo Server side
+# Hotel Room Booking demo Server side using PHP SLim and mysql
 
 ## Setup
 
