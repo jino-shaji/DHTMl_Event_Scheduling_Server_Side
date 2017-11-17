@@ -32,7 +32,13 @@ $app->post('/NewBooking',function() use ($app){
     $Email=$data['Email'];
     $ReferredBy = $data['ReferredBy'];
     $Category = $data['Category'];
-  
+    $bed_type = $data['bed_type'];
+    $No_of_guests = $data['No_of_guests'];
+    $No_of_male = $data['No_of_male'];
+    $No_of_female = $data['No_of_female'];
+    $Arrival_flight_details = $data['Arrival_flight_details'];
+    $Departure_flight_details = $data['Departure_flight_details'];
+    $is_taxi = $data['is_taxi'];
     //$new_date = date('Y-m-d H:i:s', $start_date);   
     
    // echo $new_date;
@@ -40,7 +46,7 @@ $app->post('/NewBooking',function() use ($app){
     
     $response = array();
     $dbMember = new DbOperation();
-    $result = $dbMember->addNewRoom($start_date, $end_date, $room_type,$room,$status,$is_paid,$Name,$Email,$ReferredBy,$Category);
+    $result = $dbMember->addNewRoom($start_date, $end_date, $room_type,$bed_type,$No_of_guests,$No_of_male,$No_of_female,$Arrival_flight_details,$Departure_flight_details, $room,$status,$is_taxi,$is_paid,$Name,$Email,$ReferredBy,$Category);
 
 
 
@@ -71,6 +77,13 @@ $app->post('/UpdateBooking',function() use ($app){
     $Email=$data['Email'];
     $ReferredBy = $data['ReferredBy'];
     $Category = $data['Category'];
+    $bed_type = $data['bed_type'];
+    $No_of_guests = $data['No_of_guests'];
+    $No_of_male = $data['No_of_male'];
+    $No_of_female = $data['No_of_female'];
+    $Arrival_flight_details = $data['Arrival_flight_details'];
+    $Departure_flight_details = $data['Departure_flight_details'];
+    $is_taxi = $data['is_taxi'];
   
     //$new_date = date('Y-m-d H:i:s', $start_date);   
     
@@ -79,7 +92,7 @@ $app->post('/UpdateBooking',function() use ($app){
     
     $response = array();
     $dbMember = new DbOperation();
-    $result = $dbMember->updateRoom($Id,$start_date, $end_date, $room_type,$room,$status,$is_paid,$Name,$Email,$ReferredBy,$Category);
+    $result = $dbMember-> updateRoom($Id,$start_date, $end_date, $room_type,$bed_type,$No_of_guests,$No_of_male,$No_of_female,$Arrival_flight_details,$Departure_flight_details, $room,$status,$is_taxi,$is_paid,$Name,$Email,$ReferredBy,$Category);
 
     if (!$result) {
         $response['error'] = true;

@@ -220,7 +220,7 @@
 		ev.is_paid = false;
 		ev.Name = '';
 		ev.Email = '';
-		ev.ReferredBy = 'Ref';
+		ev.ReferredBy = '';
 	});
 
 	scheduler.addMarkedTimespan({days: [0, 6], zones: "fullday", css: "timeline_weekend"});
