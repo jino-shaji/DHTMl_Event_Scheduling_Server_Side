@@ -17,8 +17,7 @@
 	scheduler.config.max_month_events = 3;
 	scheduler.config.resize_month_events = true;
 	scheduler.config.resize_month_timed= true;  
-
-	// scheduler.config.readonly = true;
+    scheduler.config.readonly = true;
 
 	var roomsArr = scheduler.serverList("room");
 	var roomTypesArr = scheduler.serverList("roomType");
@@ -58,25 +57,7 @@
 		{ key: 'Single', label: 'Single' },
 		{ key: 'Double', label: 'Double' },
 	]
-	scheduler.config.lightbox.sections = [
-		{map_to: "Name", name: "text", type: "textarea", height: 24}, 
-		{map_to: "Email", name: "Email", height: 40, type: "textarea"},
-		{map_to: "ReferredBy", name: "Referred By", height: 40, type: "textarea"},
-		{map_to:"status", name:"Status", height:40,  type:"radio", options:status_opts},
-		{map_to:"room_type", name:"Room Type", height:40,  type:"radio", options:room_type_opts},
-		{map_to:"bed_type", name:"Bed Type", height:40,  type:"radio", options:bed_type_opts},
-		{map_to: "No_of_guests", name: "No.Of Guests", height: 24, type: "textarea"},
-		{map_to: "No_of_male", name: "No.Of Male", height: 24, type: "textarea"},
-		{map_to: "No_of_female", name: "No.Of Female", height: 24, type: "textarea"},
-		{map_to: "Arrival_flight_details", name: "Arrival Flight Details", height: 40, type: "textarea"},
-		{map_to: "Departure_flight_details", name: "Departure Flight Details", height: 40, type: "textarea"},
-		{map_to:"Category", name:"category", height:40,  type:"select", options:Category_opts},
-		{map_to: "room", name: "room", type: "select", options: scheduler.serverList("currentRooms")},
-		// {map_to: "status", name: "status", type: "radio", options: scheduler.serverList("bookingStatus")},
-		{map_to: "is_paid", name: "is_paid", type: "checkbox", checked_value: true, unchecked_value: false},
-		{map_to: "is_taxi", name: "Taxi", type: "checkbox", checked_value: true, unchecked_value: false},
-		{map_to: "time", name: "time", type: "time"}
-	];
+	//  
 
 	scheduler.locale.labels.timeline_tab = 'Timeline';
  

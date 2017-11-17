@@ -24,7 +24,7 @@ $app->post('/NewBooking',function() use ($app){
    // $Id = $data['id'];
     $start_date=$data['start_date'];
     $end_date = $data['end_date'];
-    $text=$data['text'];
+    $room_type=$data['room_type'];
     $room=$data['room'];
     $status=$data['status'];
     $is_paid=$data['is_paid'];
@@ -40,7 +40,7 @@ $app->post('/NewBooking',function() use ($app){
     
     $response = array();
     $dbMember = new DbOperation();
-    $result = $dbMember->addNewRoom($start_date, $end_date, $text,$room,$status,$is_paid,$Name,$Email,$ReferredBy,$Category);
+    $result = $dbMember->addNewRoom($start_date, $end_date, $room_type,$room,$status,$is_paid,$Name,$Email,$ReferredBy,$Category);
 
 
 
@@ -63,7 +63,7 @@ $app->post('/UpdateBooking',function() use ($app){
     $Id = $data['id'];
     $start_date=$data['start_date'];
     $end_date = $data['end_date'];
-    $text=$data['text'];
+    $room_type=$data['room_type'];
     $room=$data['room'];
     $status=$data['status'];
     $is_paid=$data['is_paid'];
@@ -79,7 +79,7 @@ $app->post('/UpdateBooking',function() use ($app){
     
     $response = array();
     $dbMember = new DbOperation();
-    $result = $dbMember->updateRoom($Id,$start_date, $end_date, $text,$room,$status,$is_paid,$Name,$Email,$ReferredBy,$Category);
+    $result = $dbMember->updateRoom($Id,$start_date, $end_date, $room_type,$room,$status,$is_paid,$Name,$Email,$ReferredBy,$Category);
 
     if (!$result) {
         $response['error'] = true;

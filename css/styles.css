@@ -3,6 +3,7 @@ html, body {
 	padding: 0;
 	height: 100%;
 	overflow: hidden;
+	overflow-y: scroll;
 }
 
 
@@ -73,15 +74,15 @@ html, body {
 	background-color: #FFB74D !important;
 }
 
-.event_1 {
+.event_Progress {
 	background-color: #FFB74D !important;
 }
 
-.event_2 {
+.event_Enquiry {
 	background-color: #9CCC65 !important;
 }
 
-.event_3 {
+.event_Confirmed {
 	background-color: #40C4FF !important;
 }
 
