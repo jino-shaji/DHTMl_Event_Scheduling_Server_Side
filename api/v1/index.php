@@ -22,7 +22,9 @@ $app->post('/NewBooking',function() use ($app){
     //echoResponse(200,$data["start_date"]);
    // return;
    // $Id = $data['id'];
-    $start_date=$data['start_date'];
+   $start_date=$data['start_date'];
+   $Description=$data['Description'];
+    
     $end_date = $data['end_date'];
     $room_type=$data['room_type'];
     $room=$data['room'];
@@ -46,7 +48,7 @@ $app->post('/NewBooking',function() use ($app){
     
     $response = array();
     $dbMember = new DbOperation();
-    $result = $dbMember->addNewRoom($start_date, $end_date, $room_type,$bed_type,$No_of_guests,$No_of_male,$No_of_female,$Arrival_flight_details,$Departure_flight_details, $room,$status,$is_taxi,$is_paid,$Name,$Email,$ReferredBy,$Category);
+    $result = $dbMember->addNewRoom($start_date, $end_date, $room_type,$bed_type,$No_of_guests,$No_of_male,$No_of_female,$Arrival_flight_details,$Departure_flight_details, $room,$status,$is_taxi,$is_paid,$Name,$Email,$ReferredBy,$Category,$Description);
 
 
 
@@ -67,6 +69,8 @@ $app->post('/UpdateBooking',function() use ($app){
     //echoResponse(200,$data["start_date"]);
    // return;
     $Id = $data['id'];
+    
+    $Description=$data['Description'];
     $start_date=$data['start_date'];
     $end_date = $data['end_date'];
     $room_type=$data['room_type'];
@@ -92,7 +96,7 @@ $app->post('/UpdateBooking',function() use ($app){
     
     $response = array();
     $dbMember = new DbOperation();
-    $result = $dbMember-> updateRoom($Id,$start_date, $end_date, $room_type,$bed_type,$No_of_guests,$No_of_male,$No_of_female,$Arrival_flight_details,$Departure_flight_details, $room,$status,$is_taxi,$is_paid,$Name,$Email,$ReferredBy,$Category);
+    $result = $dbMember-> updateRoom($Id,$start_date, $end_date, $room_type,$bed_type,$No_of_guests,$No_of_male,$No_of_female,$Arrival_flight_details,$Departure_flight_details, $room,$status,$is_taxi,$is_paid,$Name,$Email,$ReferredBy,$Category,$Description);
 
     if (!$result) {
         $response['error'] = true;

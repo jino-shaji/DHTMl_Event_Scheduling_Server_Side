@@ -57,12 +57,14 @@
 	var bed_type_opts=[
 		{ key: 'Single', label: 'Single' },
 		{ key: 'Double', label: 'Double' },
+		{ key: 'Twin', label: 'Twin' },
 	]
 	scheduler.config.lightbox.sections = [
 		{map_to: "Name", name: "text", type: "textarea", height: 24}, 
 		{map_to: "Email", name: "Email", height: 40, type: "textarea"},
 		{map_to: "ReferredBy", name: "Referred By", height: 40, type: "textarea"},
 		{map_to:"status", name:"Status", height:40,  type:"radio", options:status_opts},
+		{map_to:"Category", name:"category", height:40,  type:"select", options:Category_opts},
 		{map_to:"room_type", name:"Room Type", height:40,  type:"radio", options:room_type_opts},
 		{map_to:"bed_type", name:"Bed Type", height:40,  type:"radio", options:bed_type_opts},
 		{map_to: "No_of_guests", name: "No.Of Guests", height: 24, type: "textarea"},
@@ -70,11 +72,11 @@
 		{map_to: "No_of_female", name: "No.Of Female", height: 24, type: "textarea"},
 		{map_to: "Arrival_flight_details", name: "Arrival Flight Details", height: 40, type: "textarea"},
 		{map_to: "Departure_flight_details", name: "Departure Flight Details", height: 40, type: "textarea"},
-		{map_to:"Category", name:"category", height:40,  type:"select", options:Category_opts},
 		{map_to: "room", name: "room", type: "select", options: scheduler.serverList("currentRooms")},
+		{map_to: "Description", name: "Description", height: 40, type: "textarea"},
 		// {map_to: "status", name: "status", type: "radio", options: scheduler.serverList("bookingStatus")},
-		{map_to: "is_paid", name: "is_paid", type: "checkbox", checked_value: true, unchecked_value: false},
-		{map_to: "is_taxi", name: "Taxi", type: "checkbox", checked_value: true, unchecked_value: false},
+		{map_to: "is_paid", name: "is_paid", type: "checkbox", checked_value: 1, unchecked_value: 0},
+		{map_to: "is_taxi", name: "Taxi", type: "checkbox", checked_value: 1, unchecked_value: 0},
 		{map_to: "time", name: "time", type: "time"}
 	];
 
@@ -158,10 +160,10 @@
 	}
 
 	function getPaidStatus(isPaid) {
-		return isPaid ? "paid" : "not paid";
+		return (isPaid==1) ? "paid" : "not paid";
 	}
 	function getTaxiStatus(isTaxi) {
-		return isTaxi ? "Taxi" : "No Taxi";
+		return (isTaxi==1) ? "Taxi" : "No Taxi";
 	}
 
 	var eventDateFormat = scheduler.date.date_to_str("%d %M %Y %H:%i");
@@ -194,7 +196,9 @@
 		// html.push("Status: <b>" +(event.status==null?'':event.status) + "</b>");
 		html.push("Check-in: <b>" + eventDateFormat(start) + "</b>");
 		html.push("Check-out: <b>" + eventDateFormat(end) + "</b>");
-		html.push((event.status==null?'':event.status) + ", <b>" + getPaidStatus(event.is_paid)+ "</b>, " + getTaxiStatus(event.is_taxi));
+		html.push("Description: <b>" +(event.Description==null?'':event.Description) + "</b>");
+		
+		html.push((event.status==null?'':event.status) + ", " + getPaidStatus(event.is_paid)+ ", " + getTaxiStatus(event.is_taxi));
 		return html.join("<br>")
 	};
 
@@ -216,8 +220,9 @@
 
 	scheduler.attachEvent('onEventCreated', function (event_id) {
 		var ev = scheduler.getEvent(event_id);
-		ev.status = 1;
-		ev.is_paid = false;
+		ev.status ="Enquiry";
+		ev.is_paid = 1;
+		ev.is_taxi = 1;
 		ev.Name = '';
 		ev.Email = '';
 		ev.ReferredBy = '';
@@ -254,27 +259,7 @@
 		var no_guests=ev.No_of_guests;
 		var no_male=ev.No_of_male;
 		var no_female=ev.No_of_female;
-		if (isNaN(no_guests)) 
-		{
-			dhtmlx.alert("Enter a valid No.of guests.");
-			
-		  return false;
-		}
-		else if (isNaN(no_male)) 
-		{
-			dhtmlx.alert( "Enter a valid No.of Male.");
-		  return false;
-		}
-		else if (isNaN(no_female)) 
-		{
-			dhtmlx.alert( "Enter a valid No.of Female.");
-		  return false;
-		}
-		else if (!((parseInt(no_male)+parseInt(no_female))==(parseInt(no_guests))))
-		{
-			dhtmlx.alert( "Total No.of guests doesnot match with no.of Male and Female Guests");
-			return false;
-		}
+		  
 		if (!ev.Name) {
 			dhtmlx.alert("Name must not be empty");
 			return false;
@@ -295,7 +280,8 @@ function init() {
 	// window.dp  = new dataProcessor("../DB_Functions/connection.php");
 	// dp.init(scheduler);
 
-	scheduler.init('scheduler_here', new Date(2017, 2, 1), "timeline");
+	//scheduler.init('scheduler_here', new Date(2017, 2, 1), "timeline");
+	scheduler.init('scheduler_here', new Date(), "timeline");
 	
 	scheduler.load("./data.php", "json");
 	window.dp = new dataProcessor("./data.php");

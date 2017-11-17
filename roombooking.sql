@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 17, 2017 at 04:23 AM
+-- Generation Time: Nov 17, 2017 at 08:38 PM
 -- Server version: 10.1.13-MariaDB
 -- PHP Version: 7.0.6
 
@@ -44,21 +44,17 @@ CREATE TABLE `bookings` (
   `No_of_female` int(11) DEFAULT NULL,
   `Arrival_flight_details` varchar(200) DEFAULT NULL,
   `Departure_flight_details` varchar(200) DEFAULT NULL,
-  `is_taxi` int(11) DEFAULT NULL
+  `is_taxi` int(11) DEFAULT NULL,
+  `Description` varchar(1000) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `bookings`
 --
 
-INSERT INTO `bookings` (`start_date`, `end_date`, `room`, `status`, `id`, `is_paid`, `Name`, `Email`, `ReferredBy`, `Category`, `room_type`, `bed_type`, `No_of_guests`, `No_of_male`, `No_of_female`, `Arrival_flight_details`, `Departure_flight_details`, `is_taxi`) VALUES
-('2017-03-02 04:22:36', '2017-03-23 14:13:00', 9, 'Enquiry', 1, 1, 'Jino Shaji', 'jinoshajiv@gmail.com', 'Jino S', 'Indian Standard', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1),
-('2017-03-05 22:45:00', '2017-03-09 00:55:00', 1, 'Progress', 2, 1, 'Jino S', 'jinoshajiv@gmail.com', 'Jibin', 'Indian Standard', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1),
-('2017-03-06 00:00:00', '2017-03-14 00:00:00', 5, 'Enquiry', 3, 0, 'Jino S', 'jishs@gg.com', '', 'Foreign (USA)', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
-('2017-03-04 02:35:00', '2017-03-18 01:25:00', 7, 'Enquiry', 4, 0, 'Jino', 'jinoshajiv@gmail.com', 'Jk', 'Foreign (USA)', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
-('2017-03-20 14:30:00', '2017-03-23 12:45:00', 3, 'Progress', 9, 0, 'Jino Shaji ', 'jinoshajiv@gmail.com, jiinmathe@ff.co', 'Ref Jino s', 'Foreign (USA)', 'AC', 'Single', 10, 8, 2, '0', 'ddepp flght', 0),
-('2017-03-16 05:50:00', '2017-03-17 01:25:00', 4, 'Confirmed', 10, 0, 'dsf', 'dfvc', 'Ref d', 'Foreign (USA)', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
-('2017-03-15 02:00:00', '2017-03-17 07:20:00', 3, 'Enquiry', 11, 0, 'Jose', 'jose@ff.co', 'Ref s', 'Foreign (Europe)', 'AC', 'Double', 20, 12, 8, '0', 'Dep Flight', 0);
+INSERT INTO `bookings` (`start_date`, `end_date`, `room`, `status`, `id`, `is_paid`, `Name`, `Email`, `ReferredBy`, `Category`, `room_type`, `bed_type`, `No_of_guests`, `No_of_male`, `No_of_female`, `Arrival_flight_details`, `Departure_flight_details`, `is_taxi`, `Description`) VALUES
+('2017-03-03 00:40:00', '2017-03-07 19:20:00', 4, 'Enquiry', 1, 1, 'Jino SHaji', 'jinoshajiv@gmail.com', 'Jibin', 'Foreign (Europe)', 'Non-AC', 'Single', 4, 2, 2, 'Arv', 'Dep', 1, 'Desc'),
+('2017-11-16 15:05:00', '2017-11-20 05:05:00', 2, 'Progress', 2, 1, 'Jibin', 'Jib', 'jib', 'Foreign (Europe)', 'AC', 'Single', 6, 3, 3, 'Arv flg', 'Dep Flg', 1, 'Descr');
 
 -- --------------------------------------------------------
 
@@ -195,7 +191,7 @@ ALTER TABLE `room_types`
 -- AUTO_INCREMENT for table `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `booking_statuses`
 --
