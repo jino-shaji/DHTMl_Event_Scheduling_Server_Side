@@ -21,7 +21,7 @@ class DbOperation
 
      * @return bool
      */
-    public function addNewRoom($start_date, $end_date, $room_type,$bed_type,$No_of_guests,$No_of_male,$No_of_female,$Arrival_flight_details,$Departure_flight_details, $room,$status,$is_taxi,$is_paid,$Name,$Email,$ReferredBy,$Category,$Description){
+    public function add_New_Booking($start_date, $end_date, $room_type,$bed_type,$No_of_guests,$No_of_male,$No_of_female,$Arrival_flight_details,$Departure_flight_details, $room,$status,$is_taxi,$is_paid,$Name,$Email,$ReferredBy,$Category,$Description){
        $strInsertQry="INSERT INTO bookings(start_date, end_date, room_type,bed_type,No_of_guests,No_of_male,No_of_female,Arrival_flight_details,Departure_flight_details,room,status,is_taxi,is_paid,Name,Email,ReferredBy,Category,Description) "
                       ." VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         $stmt = $this->con->prepare($strInsertQry);
@@ -34,7 +34,7 @@ class DbOperation
         return false;
     }
 
-    public function updateRoom($roomId,$start_date, $end_date, $room_type,$bed_type,$No_of_guests,$No_of_male,$No_of_female,$Arrival_flight_details,$Departure_flight_details, $room,$status,$is_taxi,$is_paid,$Name,$Email,$ReferredBy,$Category,$Description){
+    public function update_New_Booking($roomId,$start_date, $end_date, $room_type,$bed_type,$No_of_guests,$No_of_male,$No_of_female,$Arrival_flight_details,$Departure_flight_details, $room,$status,$is_taxi,$is_paid,$Name,$Email,$ReferredBy,$Category,$Description){
         $strInsertQry="update bookings set start_date=?, end_date =?, room_type=?,bed_type=?,No_of_guests=?,No_of_male=?,No_of_female=?,Arrival_flight_details=?,Departure_flight_details=?,room=?,status=?,is_taxi=?,is_paid=?,Name=?,Email=?,ReferredBy=?,Category=?,Description=? "
             ." where id=?";
         $stmt = $this->con->prepare($strInsertQry);
@@ -44,6 +44,63 @@ class DbOperation
       return $result;// $num_affected_rows>=0;
 
     }
+    public function add_NewRoom($roomno,$prefix){
+        $status=0;
+          $strInsertQry="INSERT INTO rooms(roomno, status, prefix) "
+                       ." VALUES (?,?,?)";
+         $stmt = $this->con->prepare($strInsertQry);
+         $stmt->bind_param("sss",$roomno, $status,$prefix);
+         $result = $stmt->execute();
+         $stmt->close();
+         if($result){
+             return true;
+         }
+         return false;
+     }
+ 
+     public function update_Room($roomId,$roomno,$prefix){
+        $status=0;
+         $strInsertQry="update rooms set roomno=?, status =?, prefix=? "
+             ." where id=?";
+         $stmt = $this->con->prepare($strInsertQry);
+         $stmt->bind_param("sssi",$roomno, $status,$prefix,$roomId);
+         $result = $stmt->execute();
+         $stmt->close();
+       return $result;// $num_affected_rows>=0;
+ 
+     }
+     public function room_Check($roomno,$prefix)
+     {
+             $sql = "SELECT * FROM rooms where prefix='".$prefix."' and roomno='".$roomno."'";
+             $result = $this->con->query($sql);
+             $this->con->close();
+             return $result;
+     }
+     public function room_dataById($id)
+     {
+             $sql = "SELECT * FROM rooms where id=$id";
+             $result = $this->con->query($sql);
+             $this->con->close();
+             return $result;
+     }
+    public function updateLogin($userId,$oldPassword, $Password){
+        $strInsertQry="update login_details set password=? where password=? and id=?";
+        $stmt = $this->con->prepare($strInsertQry);
+        $stmt->bind_param("ssi",$Password, $oldPassword, $userId);
+        $result = $stmt->execute();
+        $stmt->close();
+      return $result;// $num_affected_rows>=0;
+
+    }
+
+    public function user_loginCheck($userId,$oldPassword)
+    {
+            $sql = "SELECT * FROM login_details where id=$userId and password='".$oldPassword."'";
+            $result = $this->con->query($sql);
+            $this->con->close();
+            return $result;
+    }
+
 
     public function ListRoom_Bookings()
     {
@@ -52,9 +109,48 @@ class DbOperation
             $this->con->close();
             return $result;
     }
+
+    public function ListRoom_Bookings_info($location,$startDate,$endDate)
+    {
+        $locationQry="";
+        if($location!='')
+        {
+            if($location!="All")
+                $locationQry="rooms.prefix='".$location."' and ";
+        
+        }       
+           if($startDate!='' && $endDate!='')
+             $sql = "SELECT *,CONCAT(bookings.No_of_guests,'(M: ',bookings.No_of_male,' F: ',bookings.No_of_female,')') as noGuests FROM bookings inner join rooms on rooms.id=bookings.room where  ".$locationQry."  DATE(start_date)>='".$startDate."' and DATE(start_date)<='".$endDate."'";
+          else if($startDate!='' ){
+            $sql = "SELECT *,CONCAT(bookings.No_of_guests,'(M: ',bookings.No_of_male,' F: ',bookings.No_of_female,')') as noGuests FROM bookings inner join rooms on rooms.id=bookings.room where  ".$locationQry."  DATE(start_date)>='".$startDate."'";
+            
+          } 
+          else if($endDate!='' ){
+            $sql = "SELECT *,CONCAT(bookings.No_of_guests,'(M: ',bookings.No_of_male,' F: ',bookings.No_of_female,')') as noGuests FROM bookings inner join rooms on rooms.id=bookings.room where  ".($locationQry==""?$locationQry:'and')."  DATE(start_date)<='".$endDate."'";
+            
+          } 
+           $result = $this->con->query($sql);
+            $this->con->close();
+            return $result;
+    }
+
+    public function user_login($username, $password)
+    {
+            $sql = "SELECT * FROM login_details where username='".$username."' and password='".$password."'";
+            $result = $this->con->query($sql);
+            $this->con->close();
+            return $result;
+    }
     public function ListRoom()
     {
-            $RoomListsql = "SELECT id,id as value,concat(prefix,'-',roomno) as label,type,status FROM rooms";
+            $RoomListsql = "SELECT id,roomno, id as value,concat(prefix,'-',roomno) as label,prefix,type,status FROM rooms order by prefix,roomno";
+            $result = $this->con->query($RoomListsql);
+            $this->con->close();
+            return $result;
+    }
+    public function List_Disctinct_Prefix()
+    {
+            $RoomListsql = "SELECT Distinct(prefix) as prefix From rooms order by prefix";
             $result = $this->con->query($RoomListsql);
             $this->con->close();
             return $result;
@@ -66,7 +162,26 @@ class DbOperation
             $this->con->close();
             return $result;
     }
-    
+    public function delete_rooms($id){
+        $strInsertQry="delete from rooms where id = ?";
+
+        $stmt = $this->con->prepare($strInsertQry);
+        $stmt->bind_param("i",$id );
+
+        $stmt->execute();
+        $num_affected_rows = $stmt->affected_rows;
+        $stmt->close();
+
+       return $num_affected_rows;
+
+       
+
+if($num_affected_rows > 0)
+        return "true";
+        else
+            return "false";
+    } 
+
     public function delete_bookings($bookingId){
         $strInsertQry="delete from bookings where id = ? ";
 

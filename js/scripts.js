@@ -160,7 +160,7 @@
 	}
 
 	function getPaidStatus(isPaid) {
-		return (isPaid==1) ? "paid" : "not paid";
+		return (isPaid==1) ? "Paid" : "Not paid";
 	}
 	function getTaxiStatus(isTaxi) {
 		return (isTaxi==1) ? "Taxi" : "No Taxi";
@@ -221,8 +221,8 @@
 	scheduler.attachEvent('onEventCreated', function (event_id) {
 		var ev = scheduler.getEvent(event_id);
 		ev.status ="Enquiry";
-		ev.is_paid = 1;
-		ev.is_taxi = 1;
+		ev.is_paid = 0;
+		ev.is_taxi = 0;
 		ev.Name = '';
 		ev.Email = '';
 		ev.ReferredBy = '';
@@ -237,20 +237,35 @@
 			return
 		}
 		for (var i = 0; i < roomsArr.length; i++) {
-			if (value == roomsArr[i].type) {
+			if (value == roomsArr[i].prefix) {
 				currentRoomsArr.push(roomsArr[i]);
 			}
 		}
+		// currentRoomsArr.push(roomsArr[value]);
+		
 		scheduler.updateCollection("currentRooms", currentRoomsArr);
 	};
-
+	function onlyUnique(value, index, self) { 
+		return self.indexOf(value) === index;
+	}
+	
 	scheduler.attachEvent("onXLE", function () {
 		updateSections("all");
 
 		var select = document.getElementById("room_filter");
 		var selectHTML = ["<option value='all'>All</option>"];
-		for (var i = 1; i < roomTypesArr.length + 1; i++) {
-			selectHTML.push("<option value='" + i + "'>" + getRoomType(i) + "</option>");
+		var roomType=[];
+
+		for (var i =0; i < roomsArr.length ; i++) {
+			roomType.push(roomsArr[i].prefix);
+
+			//selectHTML.push("<option value='" + i + "'>" + roomsArr[i].prefix + "</option>");
+		}
+		var uniqueRoomType = roomType.filter( onlyUnique );
+		for (var i =0; i < uniqueRoomType.length ; i++) {
+			//roomType.push(uniqueRoomType[i].prefix);
+			
+			selectHTML.push("<option value='" + uniqueRoomType[i] + "'>" + uniqueRoomType[i] + "</option>");
 		}
 		select.innerHTML = selectHTML.join("");
 	});

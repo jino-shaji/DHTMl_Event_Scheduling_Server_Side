@@ -1,0 +1,294 @@
+<html>
+    <head>
+        
+                <title>Calendar</title>
+        <script src="Assets/jquery/jquery_source.js"></script>
+        <script src="Assets/jquery/jquery-ui.js"></script>       
+        <script src="Assets/bootstrap/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="Assets/bootstrap/css/bootstrap.css"/>
+        <link href="Assets/css/loading.css" rel="stylesheet" type="text/css"/>
+        <link rel="stylesheet" href="Assets/bootstrap/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="Assets/jquery/jquery-ui.css"/>
+<link href="Assets/libraries/datatables/datatables.min.css" rel="stylesheet" type="text/css"/>
+<script src="Assets/libraries/datatables/datatables.min.js" type="text/javascript"></script>
+
+        
+        
+
+    </head>
+    <body onload="initial()">
+        <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li><a href="">Home</a></li>
+        <li><a href ="">Room Setting</a></li>
+        <li><a href="analytics.html">Analytics</a></li>
+        <li><a href="">Log Out</a></li>
+              </ul>
+        
+        
+
+        
+    </div>
+  </div>
+         <div>
+                  <div id="loading" class="container">
+             <img src="Assets/img/Loading_icon.gif"/>
+        </div> 
+             <button id="addRoom" class="btn ">New Room</button>
+             <table class="table table-striped" id="tableRoom">
+                 <thead>
+                 <th>Room</th>
+                 <th>Actions</th>
+                 </thead>
+             </table>
+         </div>
+        
+        <div id="modalAddRoom" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">New Room</h4>
+      </div>
+      <div class="modal-body">
+          
+          <div class="container">
+
+                <div class="row">
+                   
+                    <div class="col-md-4 personal-info">
+                        <div class="form-group">
+                            <label class="col-lg-6 control-label">Prefix</label>
+                            <div class="col-lg-6">
+                                <input class="form-control" id="addRoomPrefix" name="addRoomPrefix" placeholder="required">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-6 control-label">Room Number</label>
+                            <div class="col-lg-6">
+                                <input class="form-control" id="addRoomNumber" name="addRoomNumber" type="number" placeholder="required">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-6 control-label"></label>
+                            <div class="col-lg-6">
+                                
+                                <button id =saveRoom>Save</button>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            
+        </div>
+          
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+        
+           <div id="modalEditRoom" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit Room</h4>
+      </div>
+      <div class="modal-body">
+          
+          <div class="container">
+<input  id="editRoomId" name="editRoomId"  required maxlength="45" hidden>
+            
+                
+                <div class="row">
+
+
+                    <!-- edit form column -->
+                    <div class="col-md-4 personal-info">
+                        <div class="form-group">
+                            <label class="col-lg-6 control-label">Prefix</label>
+                            <div class="col-lg-6">
+                                <input class="form-control" id="editRoomPrefix" name="editRoomPrefix" placeholder="required">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-6 control-label">Room Number</label>
+                            <div class="col-lg-6">
+                                <input class="form-control" id="editRoomNumber" name="editRoomNumber" type="number" placeholder="required">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-6 control-label"></label>
+                            <div class="col-lg-6">
+                                
+                                <button id =editSaveRoom>Save</button>
+                                
+                            </div>
+                        </div>
+                    </div> 
+                </div>
+
+            
+        </div>
+          
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+        
+     <script>
+         var table;
+         function initial(){
+             fillTable();
+         }
+         function fillTable(){
+             var data=[{roomId:2,name:"prefix:5",prefix:"prefix",roomNumber:"5"}];
+             
+                table=         $("#tableRoom").DataTable( {
+        "data": data,
+        "columns": [
+            { "data": "name" },
+            
+            {
+      "data": null,
+      "defaultContent": "<button class='btn edit'>Edit</button>&nbsp;&nbsp;<button class='btn btn-danger delete'>Delete</button>"
+    }
+        ],
+        dom: 'Bfrtip',
+    buttons: [
+       
+    ]
+    } );
+//             $.ajax({
+//                 type: 'GET',
+//                 url: "",
+//                 success: function (data, textStatus, jqXHR) {
+//                                $("#loading").hide();
+//    table=         $("#tableRoom").DataTable( {
+//        "data": data,
+//        "columns": [
+//            { "data": "name" },
+//            
+//            {
+//      "data": null,
+//      "defaultContent": "<button class='btn edit'>Edit</button>&nbsp;&nbsp;<button class='btn btn-danger delete'>Delete</button>"
+//    }
+//        ],
+//        dom: 'Bfrtip',
+//    buttons: [
+//       
+//    ]
+//    } );
+//                    },
+//                    error: function (jqXHR, textStatus, errorThrown) {
+//                        alert("Unexpected Error");
+//                        console.log(jqXHR+" "+errorThrown);
+//                    }
+//             });
+         }
+         
+         $(function (){
+             $('#tableRoom').on('click', '.delete', function () {
+var data = table.row( $(this).parents('tr') ).data();
+        var id =data["roomId"];
+    var row=$(this);
+        var c=confirm("You will loose all data associated with this room. Confirm");
+              if(c){
+             
+             row.prop('disabled',true);
+//            $.ajax({
+//            url: "",
+//            type: 'POST',
+//            data: {roomId:id},
+//                    
+//            success: function (data, textStatus, jqXHR) {
+//                
+//                alert("Batch Deleted");
+//                $(row).prop('disabled', false);
+//                $(row).closest('tr').remove();
+//            },
+//            error: function (jqXHR, textStatus, errorThrown) {
+//                alert("Error");
+//                console.log(textStatus + " " + errorThrown);
+//                $(row).prop('disabled', false);
+//            }
+//        });
+    }     
+        
+       
+});
+
+$('#tableRoom').on('click', '.edit', function () {
+var data = table.row( $(this).parents('tr') ).data();
+        var id =data["roomId"];
+        var prefix =data["prefix"];
+        var roomNumber =data["roomNumber"];
+        $("#editRoomPrefix").val(prefix);
+        $("#editRoomNumber").val(roomNumber);
+		$("#editRoomId").val(id);
+		
+    var row=$(this);
+                 
+  $("#modalEditRoom").modal('show');      
+       
+});
+
+        $("#addRoom").on('click',function (){
+   $("#modalAddRoom").modal('show');
+});
+$("#saveRoom").on('click',function(){
+   if($("#addRoomPrefix").val().trim().length<1){
+       alert("Enter prefix");
+       return;
+   } 
+   if($("#addRoomNumber").val().trim().length<1){
+       alert("Enter Room Number");
+       return;
+   }
+   var prefix=$("#addRoomPrefix").val().trim();
+   var roomNumber=$("#addRoomNumber").val().trim();
+});
+
+$("#editSaveRoom").on('click',function(){
+   if($("#editRoomPrefix").val().trim().length<1){
+       alert("Enter prefix");
+       return;
+   } 
+   if($("#editRoomNumber").val().trim().length<1){
+       alert("Enter Room Number");
+       return;
+   }
+   var prefix=$("#editRoomPrefix").val().trim();
+   var roomNumber=$("#editRoomNumber").val().trim();
+});
+         })
+     </script>
+     </body>
+     
+</html>

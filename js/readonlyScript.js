@@ -179,10 +179,7 @@
 		return html.join("<br>")
 	};
 
-	scheduler.templates.lightbox_header = function (start, end, ev) {
-		var formatFunc = scheduler.date.date_to_str('%d.%m.%Y %H:%i:%s');
-		return formatFunc(start) + " - " + formatFunc(end);
-	};
+ 
 
 	scheduler.attachEvent("onEventCollision", function (ev, evs) {
 		for (var i = 0; i < evs.length; i++) {
@@ -195,17 +192,16 @@
 		return true;
 	});
 
-	scheduler.attachEvent('onEventCreated', function (event_id) {
-		var ev = scheduler.getEvent(event_id);
-		ev.status = 1;
-		ev.is_paid = false;
-		ev.Name = '';
-		ev.Email = '';
-		ev.ReferredBy = 'Ref';
-	});
+	// scheduler.attachEvent('onEventCreated', function (event_id) {
+	// 	var ev = scheduler.getEvent(event_id);
+	// 	ev.status = 1;
+	// 	ev.is_paid = false;
+	// 	ev.Name = '';
+	// 	ev.Email = '';
+	// 	ev.ReferredBy = 'Ref';
+	// });
 
 	scheduler.addMarkedTimespan({days: [0, 6], zones: "fullday", css: "timeline_weekend"});
-
 	window.updateSections = function updateSections(value) {
 		var currentRoomsArr = [];
 		if (value == 'all') {
@@ -213,58 +209,37 @@
 			return
 		}
 		for (var i = 0; i < roomsArr.length; i++) {
-			if (value == roomsArr[i].type) {
+			if (value == roomsArr[i].prefix) {
 				currentRoomsArr.push(roomsArr[i]);
 			}
 		}
+		// currentRoomsArr.push(roomsArr[value]);
+		
 		scheduler.updateCollection("currentRooms", currentRoomsArr);
 	};
+	function onlyUnique(value, index, self) { 
+		return self.indexOf(value) === index;
+	}
 
 	scheduler.attachEvent("onXLE", function () {
 		updateSections("all");
 
 		var select = document.getElementById("room_filter");
 		var selectHTML = ["<option value='all'>All</option>"];
-		for (var i = 1; i < roomTypesArr.length + 1; i++) {
-			selectHTML.push("<option value='" + i + "'>" + getRoomType(i) + "</option>");
+		var roomType=[];
+
+		for (var i =0; i < roomsArr.length ; i++) {
+			roomType.push(roomsArr[i].prefix);
+
+			//selectHTML.push("<option value='" + i + "'>" + roomsArr[i].prefix + "</option>");
+		}
+		var uniqueRoomType = roomType.filter( onlyUnique );
+		for (var i =0; i < uniqueRoomType.length ; i++) {
+			//roomType.push(uniqueRoomType[i].prefix);
+			
+			selectHTML.push("<option value='" + uniqueRoomType[i] + "'>" + uniqueRoomType[i] + "</option>");
 		}
 		select.innerHTML = selectHTML.join("");
-	});
-
-	scheduler.attachEvent("onEventSave", function (id, ev, is_new) {
-		var no_guests=ev.No_of_guests;
-		var no_male=ev.No_of_male;
-		var no_female=ev.No_of_female;
-		if (isNaN(no_guests)) 
-		{
-			dhtmlx.alert("Enter a valid No.of guests.");
-			
-		  return false;
-		}
-		else if (isNaN(no_male)) 
-		{
-			dhtmlx.alert( "Enter a valid No.of Male.");
-		  return false;
-		}
-		else if (isNaN(no_female)) 
-		{
-			dhtmlx.alert( "Enter a valid No.of Female.");
-		  return false;
-		}
-		else if (!((parseInt(no_male)+parseInt(no_female))==(parseInt(no_guests))))
-		{
-			dhtmlx.alert( "Total No.of guests doesnot match with no.of Male and Female Guests");
-			return false;
-		}
-		if (!ev.Name) {
-			dhtmlx.alert("Name must not be empty");
-			return false;
-		}
-		// if (!ev.Email) {
-		// 	dhtmlx.alert("Email must not be empty");
-		// 	return false;
-		// }
-		return true;
 	});
 
 })();
@@ -276,7 +251,7 @@ function init() {
 	// window.dp  = new dataProcessor("../DB_Functions/connection.php");
 	// dp.init(scheduler);
 
-	scheduler.init('scheduler_here', new Date(2017, 2, 1), "timeline");
+	scheduler.init('scheduler_here', new Date(), "timeline");
 	
 	scheduler.load("./data.php", "json");
 	window.dp = new dataProcessor("./data.php");

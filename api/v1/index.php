@@ -9,13 +9,6 @@ require '.././libs/Slim/Slim.php';
 $app = new \Slim\Slim();
 
 
-/**
- * Method Type : POST
- * URL: http://YOUR DOMAIN/event/api/v1/NewBooking
- * parameters as json
- {"room":"3","start_date":"2017-03-06 07:10:00","end_date":"2017-03-09 09:20:00","text":"A-45","id":"2","status":"Progress","is_paid":"1","Name":"Jino S","Email":"jinoshajiv@gmail.com","ReferredBy":"Jibin","Category":"Indian Standard"}
- */
- 
 $app->post('/NewBooking',function() use ($app){
     $json = $app->request->getBody();
     $data = json_decode($json, true); // parse the JSON into an assoc. array
@@ -48,7 +41,7 @@ $app->post('/NewBooking',function() use ($app){
     
     $response = array();
     $dbMember = new DbOperation();
-    $result = $dbMember->addNewRoom($start_date, $end_date, $room_type,$bed_type,$No_of_guests,$No_of_male,$No_of_female,$Arrival_flight_details,$Departure_flight_details, $room,$status,$is_taxi,$is_paid,$Name,$Email,$ReferredBy,$Category,$Description);
+    $result = $dbMember->add_New_Booking($start_date, $end_date, $room_type,$bed_type,$No_of_guests,$No_of_male,$No_of_female,$Arrival_flight_details,$Departure_flight_details, $room,$status,$is_taxi,$is_paid,$Name,$Email,$ReferredBy,$Category,$Description);
 
 
 
@@ -62,6 +55,40 @@ $app->post('/NewBooking',function() use ($app){
     
     echoResponse(200,$response);
 });
+ 
+$app->post('/updateLogin',function() use ($app){
+    $json = $app->request->getBody();
+    $data = json_decode($json, true); // parse the JSON into an assoc. array
+    $userId = $data['userId'];
+    $oldPassword=$data['Oldpassword'];
+    $Password=$data['password'];
+    
+    $response = array();
+    $dbMember = new DbOperation();
+    $dbMemberChck = new DbOperation();
+    $resultCheck = $dbMemberChck->user_loginCheck($userId,$oldPassword);
+   
+    if ($resultCheck->num_rows <= 0)   {
+        $response['error'] = true;
+        $response['message'] = "Password Mismatch";
+    echoResponse(200,$response);
+
+    return;
+    }
+
+    $result = $dbMember-> updateLogin($userId,$oldPassword, $Password);
+ 
+    if (!$result)   {
+        $response['error'] = true;
+        $response['message'] = "Unexpected Error.";
+    }else{
+            $response['error'] = false;
+            $response['message'] = "Password Changed!";
+        }  
+    
+    echoResponse(200,$response);
+});
+
 
 $app->post('/UpdateBooking',function() use ($app){
     $json = $app->request->getBody();
@@ -96,7 +123,7 @@ $app->post('/UpdateBooking',function() use ($app){
     
     $response = array();
     $dbMember = new DbOperation();
-    $result = $dbMember-> updateRoom($Id,$start_date, $end_date, $room_type,$bed_type,$No_of_guests,$No_of_male,$No_of_female,$Arrival_flight_details,$Departure_flight_details, $room,$status,$is_taxi,$is_paid,$Name,$Email,$ReferredBy,$Category,$Description);
+    $result = $dbMember-> update_New_Booking($Id,$start_date, $end_date, $room_type,$bed_type,$No_of_guests,$No_of_male,$No_of_female,$Arrival_flight_details,$Departure_flight_details, $room,$status,$is_taxi,$is_paid,$Name,$Email,$ReferredBy,$Category,$Description);
 
     if (!$result) {
         $response['error'] = true;
@@ -111,6 +138,29 @@ $app->post('/UpdateBooking',function() use ($app){
 
    
  
+ 
+
+$app->post('/delete_rooms',function() use ($app){
+    $json = $app->request->getBody();
+ $data = json_decode($json, true); // parse the JSON into an assoc. array
+ //echoResponse(200,$data["start_date"]);
+// return;
+ 
+ $id = $data['dataId'];
+ 
+  $db = new DbOperation();
+ $response = array();
+
+if($db->delete_rooms($id)=="true"){
+     $response['error'] = false;
+     $response['message'] = "Rooms Deleted successfully";
+ }else{
+     $response['error'] = true;
+     $response['message'] = "Could not Delete Room";
+ }
+ echoResponse(200,$response);
+});
+
 
 $app->post('/delete_bookings',function() use ($app){
        $json = $app->request->getBody();
@@ -131,7 +181,71 @@ $app->post('/delete_bookings',function() use ($app){
     }
     echoResponse(200,$response);
 });
+
+$app->post('/List_Room_BookingInfo',function() use ($app){
+    $json = $app->request->getBody();
+    $data = json_decode($json, true); // parse the JSON into an assoc. array
+    //echoResponse(200,$data["start_date"]);
+   // return;
+    $location = $data['location'];
+    $start_date=$data['start_date'];
+    $end_date = $data['end_date'];
+     
+   $dbRooms = new DbOperation();
+    
+   $resultRooms = $dbRooms->ListRoom_Bookings_info($location,$start_date,$end_date);
+   
+   $response = array();
+   $response['error'] = false;
+   $response['data'] = array();
+   if ($resultRooms->num_rows > 0)  
+       $response["data"]=$resultRooms->fetch_all(MYSQLI_ASSOC);
+     else {
+       $response['error'] = true;
+       $response['message'] = "No data found";
+   }
+ echoResponse(200,$response);
+});
+
+$app->post('/List_Disctinct_Prefix',function() use ($app){
+     
+    $dbRooms = new DbOperation();
+    $resultRooms = $dbRooms->List_Disctinct_Prefix();
+    $response = array();
+    $response['error'] = false;
+    $response['data'] = array();
+    if ($resultRooms->num_rows > 0)  
+        $response["data"]=$resultRooms->fetch_all(MYSQLI_ASSOC);
+      else {
+        $response['error'] = true;
+        $response['message'] = "No data found";
+    }
+  echoResponse(200,$response);
+});
+
+$app->post('/list_rooms',function() use ($app){
+    
+    $dbRooms = new DbOperation();
+    $resultRooms = $dbRooms->ListRoom();
  
+
+    $response = array();
+    $response['error'] = false;
+    $response['data'] = array();
+   // $temp = array();
+   // $temp['collections'] = '';
+      
+    if ($resultRooms->num_rows > 0) {
+        $response["data"]=$resultRooms->fetch_all(MYSQLI_ASSOC);
+        $response['message'] = "Success";
+        
+    } else {
+        $response['error'] = true;
+        $response['message'] = "No data found";
+        //  echo "0 results";
+    }
+    echoResponse(200,$response);
+});
 
 $app->post('/list_roomData',function() use ($app){
     $db = new DbOperation();

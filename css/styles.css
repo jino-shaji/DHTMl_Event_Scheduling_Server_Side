@@ -102,7 +102,9 @@ html, body {
 .booking_paid {
 	bottom: 2px;
 }
-
+.dhx_cal_event_line {
+	height: 100% !important;
+}
 .dhx_cal_event_line:hover .booking-option {
 	background: none !important;
 }

@@ -1,0 +1,147 @@
+<html>
+    <head>
+
+        <title>Calendar</title>
+        <script src="Assets/jquery/jquery_source.js"></script>
+        <script src="Assets/jquery/jquery-ui.js"></script>       
+        <script src="Assets/bootstrap/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="Assets/bootstrap/css/bootstrap.css"/>
+        <link href="Assets/css/loading.css" rel="stylesheet" type="text/css"/>
+        <link rel="stylesheet" href="Assets/bootstrap/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="Assets/jquery/jquery-ui.css"/>
+        <link href="Assets/libraries/datatables/datatables.min.css" rel="stylesheet" type="text/css"/>
+        <script src="Assets/libraries/datatables/datatables.min.js" type="text/javascript"></script>
+
+
+
+
+    </head>
+    <body onload="initial()" style="background: #F1F1F1;" >
+        <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li><a href="">Home</a></li>
+        <li><a href ="">Room Setting</a></li>
+        <li><a href="analytics.html">Analytics</a></li>
+        
+        <li><a href="">Log Out</a></li>
+              </ul>
+        
+        
+
+        
+    </div>
+  </div>
+        <div class="container">
+            <div class="row">
+                <div id="loading" class="container">
+                    <img src="Assets/img/Loading_icon.gif"/>
+                </div>                           
+
+                <div class="col-xs-4">
+                    <strong>From Date</strong>
+                    <input type="text" placeholder="yyyy-mm-dd" id="fromDate" class="form-control" required name="fromDate"><br>
+                </div>
+
+                <div class="col-xs-4">
+                    <strong>To Date</strong>
+                    <input type="text" placeholder="yyyy-mm-dd" id="toDate" class="form-control" required name="toDate"><br>
+                </div>
+				<div class="col-xs-2 " >
+                    <strong >Select Location</strong>
+                    <select class="form-control"id='selectLocation'>
+					<option value='0'>All</option>
+					</select>
+                </div>
+                <div class="col-xs-2">
+                    <br>
+                    <input type="button"  value="Filter" id="filter" class="sub btn btn-primary form-control" >
+                </div>
+            </div>
+            <div>
+                <table class="table table-striped" id="tableDetails">
+                    <thead>
+                    <th>Arrival Date</th>
+                    <th>Name</th>
+                    <th>Flight Details</th>
+                    <th>Guests</th>
+                    <th>Room</th>
+                    <th>Room Type</th>
+                    <th>Bed Type</th>
+                    <th>Departure</th>
+                    <th>Flight Details</th>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <script>
+            var table=Number(1);
+            function initial() {
+                $('#fromDate').datepicker({dateFormat: 'yy-mm-dd'}).datepicker("setDate", -30);
+                $('#toDate').datepicker({dateFormat: 'yy-mm-dd'}).datepicker("setDate", new Date());
+				fillSelectLocation();	
+                getData($("#fromDate").val(), $("#toDate").val());
+
+            }
+            $(function () {
+                $('#filter').on('click', function () {
+                    if ($("#fromDate").val().length != 10 || $("#toDate").val().length != 10) {
+                        alert("Enter Dates!");
+                        return;
+                    }
+                    getData($("#fromDate").val(), $("#toDate").val());
+                });
+            });
+			function fillSelectLocation(){
+			//ajax call
+			//add data to $("#selectLocation")
+			}
+function getData(){
+    if(table!=1){
+                 table.destroy();
+             }
+    var data=[{arrivalDate:'2017/7/4',name:"name",aFlightDetails:"arrivl flight fetails",guests:"5(M:3,F:2)",
+        room:"2",roomType:"AC",bedType:"Double",departureDate:"2017/7/10",dFlightDetails:"depature details" }];
+                table=         $("#tableDetails").DataTable( {
+        "data": data,
+        "columns": [
+            { "data": "arrivalDate" },
+            { "data": "name" },
+            { "data": "aFlightDetails" },
+            { "data": "guests" },
+            { "data": "room" },
+            { "data": "roomType" },
+            { "data": "bedType" },
+            { "data": "departureDate"},
+            { "data": "dFlightDetails"},
+            
+        ],
+        dom: 'Bfrtip'
+    } );
+//           $("#loading").show();
+//        $("#filter").prop('disabled', true);
+//    $.ajax({
+//        url: 'stExcel',
+//        type: 'POST',
+//        data: {fromDate:fromDate,toDate:toDate,location:$("#selectLocation").val()},
+//        success: function (data, textStatus, jqXHR) {
+//                    $("#loading").hide();
+//                    $("#filter").prop('disabled', false);
+//    
+//},
+//error: function (jqXHR, textStatus, errorThrown) {
+//                alert("Unexpected Error");        
+//                    }
+//                    });
+                }
+        </script>
+    </body>
+</html>

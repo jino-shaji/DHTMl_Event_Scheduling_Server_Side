@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 17, 2017 at 08:38 PM
+-- Generation Time: Nov 20, 2017 at 09:07 PM
 -- Server version: 10.1.13-MariaDB
 -- PHP Version: 7.0.6
 
@@ -53,8 +53,8 @@ CREATE TABLE `bookings` (
 --
 
 INSERT INTO `bookings` (`start_date`, `end_date`, `room`, `status`, `id`, `is_paid`, `Name`, `Email`, `ReferredBy`, `Category`, `room_type`, `bed_type`, `No_of_guests`, `No_of_male`, `No_of_female`, `Arrival_flight_details`, `Departure_flight_details`, `is_taxi`, `Description`) VALUES
-('2017-03-03 00:40:00', '2017-03-07 19:20:00', 4, 'Enquiry', 1, 1, 'Jino SHaji', 'jinoshajiv@gmail.com', 'Jibin', 'Foreign (Europe)', 'Non-AC', 'Single', 4, 2, 2, 'Arv', 'Dep', 1, 'Desc'),
-('2017-11-16 15:05:00', '2017-11-20 05:05:00', 2, 'Progress', 2, 1, 'Jibin', 'Jib', 'jib', 'Foreign (Europe)', 'AC', 'Single', 6, 3, 3, 'Arv flg', 'Dep Flg', 1, 'Descr');
+('2017-11-04 16:50:00', '2017-11-11 10:20:00', 4, 'Enquiry', 7, 1, 'Jino S', 'jinoshajiv@gmail.com', 'Jibin', 'Foreign (USA)', 'AC', 'Double', 5, 2, 3, 'Arival Flight', 'Dep Flight', 0, 'Desc'),
+('2017-11-05 21:25:00', '2017-11-08 03:15:00', 15, 'Enquiry', 8, 0, 'Jish', '', '', 'Foreign (Europe)', 'undefined', 'undefined', 0, 0, 0, '', '', 0, '');
 
 -- --------------------------------------------------------
 
@@ -80,6 +80,27 @@ INSERT INTO `booking_statuses` (`id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `login_details`
+--
+
+CREATE TABLE `login_details` (
+  `id` bigint(20) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(20) NOT NULL,
+  `role` varchar(8) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `login_details`
+--
+
+INSERT INTO `login_details` (`id`, `username`, `password`, `role`) VALUES
+(1, 'Admin', 'qwert', 'admin'),
+(2, 'Reception', '12345', 'user');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `rooms`
 --
 
@@ -96,17 +117,12 @@ CREATE TABLE `rooms` (
 --
 
 INSERT INTO `rooms` (`id`, `roomno`, `type`, `status`, `prefix`) VALUES
-(1, '101', 1, 1, 'RO'),
-(2, '102', 1, 3, 'EV'),
-(3, '103', 1, 2, 'HJ'),
-(4, '104', 1, 1, 'JK'),
-(5, '105', 2, 1, 'LO'),
-(6, '201', 2, 2, 'KI'),
-(7, '202', 2, 1, 'OI'),
-(8, '203', 3, 3, 'OP'),
-(9, '204', 3, 3, 'OK'),
-(10, '301', 4, 2, 'IO'),
-(11, '302', 4, 2, 'ER');
+(2, '112', 1, 0, 'p'),
+(3, '103', 1, 2, 'p'),
+(4, '104', 1, 1, 'p'),
+(5, '105', 2, 1, 'p'),
+(15, '102', 0, 0, 'p'),
+(16, '201', 0, 0, 't');
 
 -- --------------------------------------------------------
 
@@ -157,12 +173,19 @@ INSERT INTO `room_types` (`id`, `name`) VALUES
 -- Indexes for table `bookings`
 --
 ALTER TABLE `bookings`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_name` (`room`);
 
 --
 -- Indexes for table `booking_statuses`
 --
 ALTER TABLE `booking_statuses`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `login_details`
+--
+ALTER TABLE `login_details`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -191,17 +214,22 @@ ALTER TABLE `room_types`
 -- AUTO_INCREMENT for table `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT for table `booking_statuses`
 --
 ALTER TABLE `booking_statuses`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
+-- AUTO_INCREMENT for table `login_details`
+--
+ALTER TABLE `login_details`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+--
 -- AUTO_INCREMENT for table `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 --
 -- AUTO_INCREMENT for table `room_statuses`
 --
@@ -212,6 +240,16 @@ ALTER TABLE `room_statuses`
 --
 ALTER TABLE `room_types`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `bookings`
+--
+ALTER TABLE `bookings`
+  ADD CONSTRAINT `fk_name` FOREIGN KEY (`room`) REFERENCES `rooms` (`id`) ON DELETE CASCADE;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
