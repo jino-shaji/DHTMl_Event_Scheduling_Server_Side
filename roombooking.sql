@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 20, 2017 at 09:07 PM
+-- Generation Time: Nov 20, 2017 at 09:14 PM
 -- Server version: 10.1.13-MariaDB
 -- PHP Version: 7.0.6
 
@@ -53,8 +53,7 @@ CREATE TABLE `bookings` (
 --
 
 INSERT INTO `bookings` (`start_date`, `end_date`, `room`, `status`, `id`, `is_paid`, `Name`, `Email`, `ReferredBy`, `Category`, `room_type`, `bed_type`, `No_of_guests`, `No_of_male`, `No_of_female`, `Arrival_flight_details`, `Departure_flight_details`, `is_taxi`, `Description`) VALUES
-('2017-11-04 16:50:00', '2017-11-11 10:20:00', 4, 'Enquiry', 7, 1, 'Jino S', 'jinoshajiv@gmail.com', 'Jibin', 'Foreign (USA)', 'AC', 'Double', 5, 2, 3, 'Arival Flight', 'Dep Flight', 0, 'Desc'),
-('2017-11-05 21:25:00', '2017-11-08 03:15:00', 15, 'Enquiry', 8, 0, 'Jish', '', '', 'Foreign (Europe)', 'undefined', 'undefined', 0, 0, 0, '', '', 0, '');
+('2017-11-04 16:50:00', '2017-11-11 10:20:00', 4, 'Enquiry', 7, 1, 'Jino S', 'jinoshajiv@gmail.com', 'Jibin', 'Foreign (USA)', 'AC', 'Double', 5, 2, 3, 'Arival Flight', 'Dep Flight', 0, 'Desc');
 
 -- --------------------------------------------------------
 
@@ -118,10 +117,7 @@ CREATE TABLE `rooms` (
 
 INSERT INTO `rooms` (`id`, `roomno`, `type`, `status`, `prefix`) VALUES
 (2, '112', 1, 0, 'p'),
-(3, '103', 1, 2, 'p'),
 (4, '104', 1, 1, 'p'),
-(5, '105', 2, 1, 'p'),
-(15, '102', 0, 0, 'p'),
 (16, '201', 0, 0, 't');
 
 -- --------------------------------------------------------

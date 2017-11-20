@@ -280,6 +280,8 @@ var data = table.row( $(this).parents('tr') ).data();
              var data = jQuery.parseJSON(data);
                 if(!data.error) {
                     fillTable();
+                    swal("Success!", data.message, "success");
+                    
                     // window.location.replace("index.php");
                 }
                 else{
