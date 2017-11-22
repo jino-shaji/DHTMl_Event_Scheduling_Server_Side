@@ -38,7 +38,7 @@ if($_SERVER['REQUEST_METHOD']=='POST') {
     $prefix= $_POST["addRoomPrefix"];
     $dbRoom = new DbOperation();
     $dbRoomChck = new DbOperation();
-    $resultCheck = $dbRoomChck->room_Check($roomno,$prefix);
+    $resultCheck = $dbRoomChck->room_Check(trim($roomno),trim($prefix));
    
     if ($resultCheck->num_rows > 0)   {
         $response['error'] = true;
@@ -47,7 +47,7 @@ if($_SERVER['REQUEST_METHOD']=='POST') {
        return;
     }
 
-    $result = $dbRoom->add_NewRoom($roomno,$prefix);
+    $result = $dbRoom->add_NewRoom(trim($roomno),trim($prefix));
     if (!$result)   {
         $response['error'] = true;
         $response['message'] = "Counld not Save Room Data";

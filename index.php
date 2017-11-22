@@ -80,13 +80,18 @@ if((isset($_SESSION['role']) &&($_SESSION['role']!="admin") )){
 </head>
 
 <body onload="init()">
-    
-      <div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:100%;'>
+<!-- <div style='float: left; padding:10px;'>
+		<div id="cal_here" style='width:250px;'></div>
+	</div> -->
+
+      <div id="scheduler_here" class="dhx_cal_container" style='width:auto; height:100%;'>
           <div class="dhx_cal_navline">
             <div class="row" style="font-size:16px;padding:4px 20px;">
                 Show rooms:
                 <select id="room_filter" onchange='updateSections(this.value)'></select>
-            </div>
+             </div>
+             <div class="dhx_minical_icon" id="dhx_minical_icon" onclick="show_minical()">&nbsp;</div>
+
               <div class="dhx_cal_prev_button">&nbsp;</div>
               <div class="dhx_cal_next_button">&nbsp;</div>
               <div class="dhx_cal_today_button"></div>

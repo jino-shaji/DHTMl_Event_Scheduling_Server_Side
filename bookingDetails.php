@@ -29,6 +29,9 @@ if(isset($_SESSION['timeout'])) {
 if (!(isset($_SESSION['role']))){
     header('Location: login.php');
 } 
+if((isset($_SESSION['role']) &&($_SESSION['role']!="admin") )){
+    header('Location: user.php');
+  }
 ?>
 <html>
     <head>
@@ -176,7 +179,7 @@ console.log(JSON.stringify(searchData));
             type: "POST", //rest Type
             dataType: 'json', //mispelled
             data:JSON.stringify(searchData), //mispelled
-            url: "/event/api/v1/List_Room_BookingInfo",
+            url: "api/v1/List_Room_BookingInfo",
             async: false,
             contentType: "application/json; charset=utf-8",
             success: function (result) {
@@ -186,7 +189,7 @@ console.log(JSON.stringify(searchData));
 				{
                 console.log(result.data);
                     
-                    table=         $("#tableDetails").DataTable( {
+    table= $("#tableDetails").DataTable( {
         "data": result.data,
         "columns": [
             { "data": "start_date" },

@@ -22,19 +22,77 @@ class DbOperation
      * @return bool
      */
     public function add_New_Booking($start_date, $end_date, $room_type,$bed_type,$No_of_guests,$No_of_male,$No_of_female,$Arrival_flight_details,$Departure_flight_details, $room,$status,$is_taxi,$is_paid,$Name,$Email,$ReferredBy,$Category,$Description){
-       $strInsertQry="INSERT INTO bookings(start_date, end_date, room_type,bed_type,No_of_guests,No_of_male,No_of_female,Arrival_flight_details,Departure_flight_details,room,status,is_taxi,is_paid,Name,Email,ReferredBy,Category,Description) "
-                      ." VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-        $stmt = $this->con->prepare($strInsertQry);
-        $stmt->bind_param("ssssiiissisiisssss", $start_date, $end_date, $room_type,$bed_type,$No_of_guests,$No_of_male,$No_of_female,$Arrival_flight_details,$Departure_flight_details,$room,$status,$is_taxi,$is_paid,$Name,$Email,$ReferredBy,$Category,$Description);
-        $result = $stmt->execute();
-        $stmt->close();
+       // $strInsertQry="call insert_room_booking_info(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        $strInsertQry="call insert_room_booking_info('".$start_date."', '".$end_date."', '".$room_type."','".$bed_type."',$No_of_guests,$No_of_male,$No_of_female,'".$Arrival_flight_details."','".$Departure_flight_details."',$room,'".$status."',$is_taxi,$is_paid,'".$Name."','".$Email."','".$ReferredBy."','".$Category."','".$Description."')";
+        //$stmt = $this->con->prepare($strInsertQry);
+       // $stmt->bind_param("ssssiiissisiisssss", $start_date, $end_date, $room_type,$bed_type,$No_of_guests,$No_of_male,$No_of_female,$Arrival_flight_details,$Departure_flight_details,$room,$status,$is_taxi,$is_paid,$Name,$Email,$ReferredBy,$Category,$Description);
+       // $result = $stmt->execute();
+   //return $strInsertQry;
+        $result = $this->con->query($strInsertQry);
+        $this->con->close();
+        //$stmt->close();
         if($result){
             return true;
         }
         return false;
     }
+    public function add_New_Booking_insertInto($start_date, $end_date, $room_type,$bed_type,$No_of_guests,$No_of_male,$No_of_female,$Arrival_flight_details,$Departure_flight_details, $room,$status,$is_taxi,$is_paid,$Name,$Email,$ReferredBy,$Category,$Description){
+        $strInsertQry="INSERT INTO bookings(start_date, end_date, room_type,bed_type,No_of_guests,No_of_male,No_of_female,Arrival_flight_details,Departure_flight_details,room,status,is_taxi,is_paid,Name,Email,ReferredBy,Category,Description) "
+                       ." VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+         $stmt = $this->con->prepare($strInsertQry);
+         $stmt->bind_param("ssssiiissisiisssss", $start_date, $end_date, $room_type,$bed_type,$No_of_guests,$No_of_male,$No_of_female,$Arrival_flight_details,$Departure_flight_details,$room,$status,$is_taxi,$is_paid,$Name,$Email,$ReferredBy,$Category,$Description);
+         $result = $stmt->execute();
+         $stmt->close();
+         if($result){
+             return true;
+         }
+         return false;
+     }
+ 
+    
+     public function delete_rooms($id){
+        $strInsertQry="delete from rooms where id = ?";
 
+        $stmt = $this->con->prepare($strInsertQry);
+        $stmt->bind_param("i",$id );
+
+        $stmt->execute();
+        $num_affected_rows = $stmt->affected_rows;
+        $stmt->close();
+
+       return $num_affected_rows;
+
+       
+
+if($num_affected_rows > 0)
+        return "true";
+        else
+            return "false";
+    }
+     
     public function update_New_Booking($roomId,$start_date, $end_date, $room_type,$bed_type,$No_of_guests,$No_of_male,$No_of_female,$Arrival_flight_details,$Departure_flight_details, $room,$status,$is_taxi,$is_paid,$Name,$Email,$ReferredBy,$Category,$Description){
+       
+        $strInsertQry="call update_room_booking_info($roomId,'".$start_date."', '".$end_date."', '".$room_type."','".$bed_type."',$No_of_guests,$No_of_male,$No_of_female,'".$Arrival_flight_details."','".$Departure_flight_details."',$room,'".$status."',$is_taxi,$is_paid,'".$Name."','".$Email."','".$ReferredBy."','".$Category."','".$Description."')";
+
+        $result = $this->con->query($strInsertQry);
+        $this->con->close();
+
+        // $strInsertQry="update bookings set start_date=?, end_date =?, room_type=?,bed_type=?,No_of_guests=?,No_of_male=?,No_of_female=?,Arrival_flight_details=?,Departure_flight_details=?,room=?,status=?,is_taxi=?,is_paid=?,Name=?,Email=?,ReferredBy=?,Category=?,Description=? "
+        //     ." where id=?";
+        // $stmt = $this->con->prepare($strInsertQry);
+        // $stmt->bind_param("ssssiiissisiisssssi",$start_date, $end_date, $room_type,$bed_type,$No_of_guests,$No_of_male,$No_of_female,$Arrival_flight_details,$Departure_flight_details,$room,$status,$is_taxi,$is_paid,$Name,$Email,$ReferredBy,$Category,$Description,$roomId);
+        // $result = $stmt->execute();
+        // $stmt->close();
+        if($result){
+            return true;
+        }
+        return false;
+     // return $result;// $num_affected_rows>=0;
+
+    }
+
+    
+    public function update_New_Booking_query($roomId,$start_date, $end_date, $room_type,$bed_type,$No_of_guests,$No_of_male,$No_of_female,$Arrival_flight_details,$Departure_flight_details, $room,$status,$is_taxi,$is_paid,$Name,$Email,$ReferredBy,$Category,$Description){
         $strInsertQry="update bookings set start_date=?, end_date =?, room_type=?,bed_type=?,No_of_guests=?,No_of_male=?,No_of_female=?,Arrival_flight_details=?,Departure_flight_details=?,room=?,status=?,is_taxi=?,is_paid=?,Name=?,Email=?,ReferredBy=?,Category=?,Description=? "
             ." where id=?";
         $stmt = $this->con->prepare($strInsertQry);
@@ -42,8 +100,9 @@ class DbOperation
         $result = $stmt->execute();
         $stmt->close();
       return $result;// $num_affected_rows>=0;
-
     }
+
+
     public function add_NewRoom($roomno,$prefix){
         $status=0;
           $strInsertQry="INSERT INTO rooms(roomno, status, prefix) "
@@ -239,27 +298,10 @@ return  $response;
             $this->con->close();
             return $result;
     }
-    public function delete_rooms($id){
-        $strInsertQry="delete from rooms where id = ?";
-
-        $stmt = $this->con->prepare($strInsertQry);
-        $stmt->bind_param("i",$id );
-
-        $stmt->execute();
-        $num_affected_rows = $stmt->affected_rows;
-        $stmt->close();
-
-       return $num_affected_rows;
-
-       
-
-if($num_affected_rows > 0)
-        return "true";
-        else
-            return "false";
-    } 
+     
 
     public function delete_bookings($bookingId){
+        /*
         $strInsertQry="delete from bookings where id = ? ";
 
         $stmt = $this->con->prepare($strInsertQry);
@@ -272,6 +314,24 @@ if($num_affected_rows > 0)
 if($num_affected_rows > 0)
         return "true";
         else
-            return "false";
+            return "false";*/
+
+            $strInsertQry="call delete_room_booking_info($bookingId)";
+            
+             $result = $this->con->query($strInsertQry);
+             $this->con->close();
+             $data=$result->fetch_all(MYSQLI_ASSOC);
+     
+             // $strInsertQry="update bookings set start_date=?, end_date =?, room_type=?,bed_type=?,No_of_guests=?,No_of_male=?,No_of_female=?,Arrival_flight_details=?,Departure_flight_details=?,room=?,status=?,is_taxi=?,is_paid=?,Name=?,Email=?,ReferredBy=?,Category=?,Description=? "
+             //     ." where id=?";
+             // $stmt = $this->con->prepare($strInsertQry);
+             // $stmt->bind_param("ssssiiissisiisssssi",$start_date, $end_date, $room_type,$bed_type,$No_of_guests,$No_of_male,$No_of_female,$Arrival_flight_details,$Departure_flight_details,$room,$status,$is_taxi,$is_paid,$Name,$Email,$ReferredBy,$Category,$Description,$roomId);
+             // $result = $stmt->execute();
+             // $stmt->close();
+            // return $data;
+             if($data[0]['countBookings']>0){
+                 return true;
+             }
+             return false;
     } 
 }

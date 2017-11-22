@@ -28,6 +28,10 @@ if(isset($_SESSION['timeout'])) {
 if (!(isset($_SESSION['role']))){
     header('Location: login.php');
 } 
+if((isset($_SESSION['role']) &&($_SESSION['role']!="admin") )){
+    header('Location: user.php');
+  }
+  
 ?>
 <html>
     <head>
@@ -281,7 +285,6 @@ var data = table.row( $(this).parents('tr') ).data();
                 if(!data.error) {
                     fillTable();
                     swal("Success!", data.message, "success");
-                    
                     // window.location.replace("index.php");
                 }
                 else{
@@ -342,8 +345,7 @@ var data = table.row( $(this).parents('tr') ).data();
         $("#editRoomNumber").val(roomNumber);
 		$("#editRoomNumberId").val(id);
 		$("#editRoomId").val(id);
-		
-    var row=$(this);
+		 var row=$(this);
                  
   $("#modalEditRoom").modal('show');      
        
@@ -387,7 +389,6 @@ e.preventDefault();
                     $("#btnClose").click();
                     fillTable();
                     swal("Saved", data.message, "success");
-                   
                     // window.location.replace("index.php");
                 }
                 else{
@@ -400,7 +401,6 @@ e.preventDefault();
                 swal("Error!", textStatus, "error");
             }
         });
-
 });
 $(document).on("submit","#FrmRoomSettingsEdit",function(e){
     

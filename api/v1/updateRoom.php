@@ -59,7 +59,7 @@ if($_SERVER['REQUEST_METHOD']=='POST') {
       if($Oldroomno!=$roomno || $Oldprefix!=$prefix)
       {
             
-            $resultCheck = $dbRoomChck->room_Check($roomno,$prefix);
+            $resultCheck = $dbRoomChck->room_Check(trim($roomno),trim($prefix));
 
         if ($resultCheck->num_rows >0)   {
             $response['error'] = true;
@@ -69,7 +69,7 @@ if($_SERVER['REQUEST_METHOD']=='POST') {
         }
       }
 
-    $result = $dbRoom->update_Room($id,$roomno,$prefix);
+    $result = $dbRoom->update_Room($id,trim($roomno),trim($prefix));
     if (!$result)   {
         $response['error'] = true;
         $response['message'] = "Counld not Update Room Data";

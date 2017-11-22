@@ -54,7 +54,7 @@ if($_SERVER['REQUEST_METHOD']=='POST') {
     //$remember_me= $_POST["remember_meV"];
     $dbMember = new DbOperation();
     $dbMemberChck = new DbOperation();
-    $resultCheck = $dbMemberChck->user_loginCheck($userId,$Oldpassword);
+    $resultCheck = $dbMemberChck->user_loginCheck($userId,trim($Oldpassword));
    
     if ($resultCheck->num_rows <= 0)   {
         $response['error'] = true;
@@ -64,14 +64,14 @@ if($_SERVER['REQUEST_METHOD']=='POST') {
     return;
     }
 
-    $result = $dbMember-> updateLogin($userId,$oldPassword, $Password);
+    $result = $dbMember-> updateLogin($userId,trim($oldPassword), trim($Password));
  
     if (!$result)   {
         $response['error'] = true;
-        $response['message'] = "Counld not update Logi Data";
+        $response['message'] = "Unexpected error. Counld not update password";
     }else{
             $response['error'] = false;
-            $response['message'] = "User Login updated successfully";
+            $response['message'] = "Password Changed successfully";
         }  
     
         echo   json_encode($response);

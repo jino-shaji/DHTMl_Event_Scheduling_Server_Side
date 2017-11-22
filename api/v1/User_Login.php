@@ -29,7 +29,7 @@ if($_SERVER['REQUEST_METHOD']=='POST') {
                 $_SESSION["username"]=$row['username'];
                 $_SESSION["user_id"]=$row['id'];
                 $_SESSION["role"]=$row['role'];
-                $_SESSION['timeout'] = time() + (1);
+                $_SESSION['timeout'] = time() + (20*60);
             $temp['user_id'] = $_SESSION["user_id"];
             $temp['username'] = $_SESSION["username"];
             $temp['role'] = $row['role'];

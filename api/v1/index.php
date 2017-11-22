@@ -14,24 +14,23 @@ $app->post('/NewBooking',function() use ($app){
     //echoResponse(200,$data["start_date"]);
    // return;
    // $Id = $data['id'];
-   $start_date=$data['start_date'];
-   $Description=$data['Description'];
-    
+    $start_date=$data['start_date'];
+    $Description=trim($data['Description']);
     $end_date = $data['end_date'];
     $room_type=$data['room_type'];
     $room=$data['room'];
     $status=$data['status'];
     $is_paid=$data['is_paid'];
-    $Name=$data['Name'];
-    $Email=$data['Email'];
+    $Name=trim($data['Name']);
+    $Email=trim($data['Email']);
     $ReferredBy = $data['ReferredBy'];
     $Category = $data['Category'];
     $bed_type = $data['bed_type'];
-    $No_of_guests = $data['No_of_guests'];
-    $No_of_male = $data['No_of_male'];
-    $No_of_female = $data['No_of_female'];
-    $Arrival_flight_details = $data['Arrival_flight_details'];
-    $Departure_flight_details = $data['Departure_flight_details'];
+    $No_of_guests =($data['No_of_guests']==''?0:$data['No_of_guests']);
+    $No_of_male = ($data['No_of_male']==''?0:$data['No_of_male']) ;
+    $No_of_female = ($data['No_of_female']==''?0:$data['No_of_female']);  
+    $Arrival_flight_details = trim($data['Arrival_flight_details']);
+    $Departure_flight_details = trim($data['Departure_flight_details']);
     $is_taxi = $data['is_taxi'];
     //$new_date = date('Y-m-d H:i:s', $start_date);   
     
@@ -42,8 +41,8 @@ $app->post('/NewBooking',function() use ($app){
     $dbMember = new DbOperation();
     $result = $dbMember->add_New_Booking($start_date, $end_date, $room_type,$bed_type,$No_of_guests,$No_of_male,$No_of_female,$Arrival_flight_details,$Departure_flight_details, $room,$status,$is_taxi,$is_paid,$Name,$Email,$ReferredBy,$Category,$Description);
 
-
-
+// echo $result;
+// return;
     if (!$result) {
         $response['error'] = true;
         $response['message'] = "Counld not Save event";
@@ -96,25 +95,24 @@ $app->post('/UpdateBooking',function() use ($app){
    // return;
     $Id = $data['id'];
     
-    $Description=$data['Description'];
     $start_date=$data['start_date'];
+    $Description=trim($data['Description']);
     $end_date = $data['end_date'];
     $room_type=$data['room_type'];
     $room=$data['room'];
     $status=$data['status'];
     $is_paid=$data['is_paid'];
-    $Name=$data['Name'];
-    $Email=$data['Email'];
+    $Name=trim($data['Name']);
+    $Email=trim($data['Email']);
     $ReferredBy = $data['ReferredBy'];
     $Category = $data['Category'];
     $bed_type = $data['bed_type'];
-    $No_of_guests = $data['No_of_guests'];
-    $No_of_male = $data['No_of_male'];
-    $No_of_female = $data['No_of_female'];
-    $Arrival_flight_details = $data['Arrival_flight_details'];
-    $Departure_flight_details = $data['Departure_flight_details'];
+    $No_of_guests =($data['No_of_guests']==''?0:$data['No_of_guests']);
+    $No_of_male = ($data['No_of_male']==''?0:$data['No_of_male']) ;
+    $No_of_female = ($data['No_of_female']==''?0:$data['No_of_female']);  
+    $Arrival_flight_details = trim($data['Arrival_flight_details']);
+    $Departure_flight_details = trim($data['Departure_flight_details']);
     $is_taxi = $data['is_taxi'];
-  
     //$new_date = date('Y-m-d H:i:s', $start_date);   
     
    // echo $new_date;
@@ -126,7 +124,7 @@ $app->post('/UpdateBooking',function() use ($app){
 
     if (!$result) {
         $response['error'] = true;
-        $response['message'] = "Counld not update event";
+        $response['message'] = "Unexpected Error";
     }else{
             $response['error'] = false;
             $response['message'] = "Event updated successfully";
@@ -150,6 +148,8 @@ $app->post('/delete_rooms',function() use ($app){
   $db = new DbOperation();
  $response = array();
 
+
+
 if($db->delete_rooms($id)=="true"){
      $response['error'] = false;
      $response['message'] = "Rooms Deleted successfully";
@@ -170,13 +170,16 @@ $app->post('/delete_bookings',function() use ($app){
 
      $db = new DbOperation();
     $response = array();
-
-   if($db->delete_bookings($bookingid)=="true"){
+$resultD=$db->delete_bookings($bookingid);
+// echoResponse(200,$resultD);
+ 
+// return;
+   if($resultD){
         $response['error'] = false;
         $response['message'] = "Booking Deleted successfully";
     }else{
         $response['error'] = true;
-        $response['message'] = "Could not Delete Booking";
+        $response['message'] = "Booking with the selected id is not exists or already deleted.";
     }
     echoResponse(200,$response);
 });

@@ -82,6 +82,7 @@ if((isset($_SESSION['role']) &&($_SESSION['role']=="admin") )){
                 Show rooms:
                 <select id="room_filter" onchange='updateSections(this.value)'></select>
             </div>
+            <div class="dhx_minical_icon" id="dhx_minical_icon" onclick="show_minical()">&nbsp;</div>
               <div class="dhx_cal_prev_button">&nbsp;</div>
               <div class="dhx_cal_next_button">&nbsp;</div>
               <div class="dhx_cal_today_button"></div>

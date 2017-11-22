@@ -6,7 +6,7 @@
 	scheduler.locale.labels.section_time = 'Time';
 	scheduler.locale.labels.section_Status = 'Status';
 	scheduler.locale.labels.section_category = 'Category';
-
+	 
 	scheduler.xy.scale_height = 30;
 	scheduler.config.details_on_create = true;
 	scheduler.config.details_on_dblclick = true;
@@ -17,8 +17,10 @@
 	scheduler.config.max_month_events = 3;
 	scheduler.config.resize_month_events = true;
 	scheduler.config.resize_month_timed= true;  
-
+	scheduler.config.buttons_left = ["dhx_save_btn", "dhx_cancel_btn"];
+	scheduler.config.buttons_right = ["dhx_delete_btn"];
 	// scheduler.config.readonly = true;
+	
 
 	var roomsArr = scheduler.serverList("room");
 	var roomTypesArr = scheduler.serverList("roomType");
@@ -288,6 +290,22 @@
 
 })();
 
+function show_minical(){
+	if (scheduler.isCalendarVisible())
+		scheduler.destroyCalendar();
+	else
+		scheduler.renderCalendar({
+			position:"dhx_minical_icon",
+			date:scheduler._date,
+			navigation:true,
+			handler:function(date,calendar){
+				scheduler.setCurrentView(date);
+				scheduler.destroyCalendar()
+			}
+		});
+}
+
+
 function init() {
 
 	
@@ -301,7 +319,7 @@ function init() {
 	scheduler.load("./data.php", "json");
 	window.dp = new dataProcessor("./data.php");
 	dp.init(scheduler);
-
+	 
 
 	(function () {
 		var element = document.getElementById("scheduler_here");
