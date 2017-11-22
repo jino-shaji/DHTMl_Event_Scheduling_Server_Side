@@ -35,14 +35,31 @@
 		$.ajax({
             type: "POST", //rest Type
             dataType: 'json', //mispelled
-            url: "/event/api/v1/list_roomData",
+            url: "api/v1/CheckSession.php",
             async: false,
             contentType: "application/json; charset=utf-8",
             success: function (result) {
-				console.log(result);  
-				data=    result     ;
+				console.log(result); 
+				if(result.error) {
+                   $(location).attr('href','../login.php');
+				}else{
+					$.ajax({
+						type: "POST", //rest Type
+						dataType: 'json', //mispelled
+						url: "api/v1/list_roomData",
+						async: false,
+						contentType: "application/json; charset=utf-8",
+						success: function (result) {
+							console.log(result);  
+							data=    result     ;
+						}
+				   });
+				}
+				 
             }
-       });
+	   });
+	   
+	   
 // 	var bookingStatusInfo=[];
 // 	bookingStatusInfo.push({"id":"1","value":"1","label":"New"});
 // 	bookingStatusInfo.push({"id":"2","value":"2","label":"Confirmed"});

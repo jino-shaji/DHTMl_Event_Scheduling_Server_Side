@@ -109,7 +109,54 @@ class DbOperation
             $this->con->close();
             return $result;
     }
+    public function List_analytics($sql)
+    {
+            
+            $result = $this->con->query($sql);
+            $response=array();
+             $response['datas']=array();
+            $tempData=array();
+            $tempData['results']=array();
+           do
+           {
+           // Store first result set
+            if ($result=mysqli_store_result($this->con))
+              {
+                $tempData['results']=$result->fetch_all(MYSQLI_ASSOC);
+                mysqli_free_result($result);
+                array_push($response,$tempData['results']);
+              }
+            }
+             while (mysqli_next_result($this->con));
 
+return  $response;
+            $response["data"]=$result->fetch_all(MYSQLI_ASSOC);
+            mysqli_free_result($result);
+            mysqli_next_result($this->con);
+            $result2 = mysqli_use_result($this->con);
+            
+             $response["data2"]=$result2->fetch_all(MYSQLI_ASSOC);
+             
+             mysqli_free_result($result2);
+             mysqli_next_result($this->con);
+            $result2 = mysqli_use_result($this->con);
+            $response["data3"]=$result2->fetch_all(MYSQLI_ASSOC);
+            
+            mysqli_free_result($result2);
+            mysqli_next_result($this->con);
+           $result2 = mysqli_use_result($this->con);
+           $response["data4"]=$result2->fetch_all(MYSQLI_ASSOC);
+            
+           mysqli_free_result($result2);
+           mysqli_next_result($this->con);
+          $result2 = mysqli_use_result($this->con);
+          $response["data5"]=$result2->fetch_all(MYSQLI_ASSOC);
+           
+          
+             $this->con->close();
+             
+            return $response;
+    }
     public function ListRoom_Bookings_info($location,$startDate,$endDate)
     {
         $locationQry="";
@@ -117,18 +164,35 @@ class DbOperation
         {
             if($location!="All")
                 $locationQry="rooms.prefix='".$location."' and ";
+        }   
         
-        }       
-           if($startDate!='' && $endDate!='')
-             $sql = "SELECT *,CONCAT(bookings.No_of_guests,'(M: ',bookings.No_of_male,' F: ',bookings.No_of_female,')') as noGuests FROM bookings inner join rooms on rooms.id=bookings.room where  ".$locationQry."  DATE(start_date)>='".$startDate."' and DATE(start_date)<='".$endDate."'";
-          else if($startDate!='' ){
-            $sql = "SELECT *,CONCAT(bookings.No_of_guests,'(M: ',bookings.No_of_male,' F: ',bookings.No_of_female,')') as noGuests FROM bookings inner join rooms on rooms.id=bookings.room where  ".$locationQry."  DATE(start_date)>='".$startDate."'";
+        if($startDate=='' )
+        {
+            $resultMin = $this->con->query("select Date(min(start_date)) as start_date from bookings");
+            $startDateArray=$resultMin->fetch_all(MYSQLI_ASSOC);
+            $startDate=$startDateArray[0]['start_date'];
+        }
+        if($endDate=='' )
+        {
+            $resultMax = $this->con->query("select Date(max(end_date)) as end_date from bookings");
+            $endDateArray=$resultMax->fetch_all(MYSQLI_ASSOC);
+            $endDate=$endDateArray[0]['end_date'];
+        }
+        if($startDate!='' && $endDate!='')
+           $sql = "SELECT *,CONCAT(bookings.No_of_guests,'(M: ',bookings.No_of_male,' F: ',bookings.No_of_female,')') as noGuests FROM bookings inner join rooms on rooms.id=bookings.room where  ".$locationQry." 
+           ('".$startDate."' <=Date(bookings.start_date) and '".$endDate."' >=Date(bookings.end_date)) or
+           ('".$startDate."' <= Date(bookings.start_date) and '".$endDate."'<= Date(bookings.end_date) and '".$endDate."'>=Date(bookings.start_date)) or
+           ('".$startDate."'>= Date(bookings.start_date) and '".$endDate."' <= Date(bookings.end_date)) or
+           ('".$startDate."' <=Date(bookings.end_date) and '".$endDate."' >=Date(bookings.end_date)) ";
+
+        //   else if($startDate!='' ){
+        //     $sql = "SELECT *,CONCAT(bookings.No_of_guests,'(M: ',bookings.No_of_male,' F: ',bookings.No_of_female,')') as noGuests FROM bookings inner join rooms on rooms.id=bookings.room where  ".$locationQry."  DATE(start_date)>='".$startDate."'";
             
-          } 
-          else if($endDate!='' ){
-            $sql = "SELECT *,CONCAT(bookings.No_of_guests,'(M: ',bookings.No_of_male,' F: ',bookings.No_of_female,')') as noGuests FROM bookings inner join rooms on rooms.id=bookings.room where  ".($locationQry==""?$locationQry:'and')."  DATE(start_date)<='".$endDate."'";
+        //   } 
+        //   else if($endDate!='' ){
+        //     $sql = "SELECT *,CONCAT(bookings.No_of_guests,'(M: ',bookings.No_of_male,' F: ',bookings.No_of_female,')') as noGuests FROM bookings inner join rooms on rooms.id=bookings.room where  ".$locationQry."  DATE(start_date)<='".$endDate."'";
             
-          } 
+        //   } 
            $result = $this->con->query($sql);
             $this->con->close();
             return $result;

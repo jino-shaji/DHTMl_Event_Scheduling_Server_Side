@@ -8,7 +8,6 @@ require '.././libs/Slim/Slim.php';
 
 $app = new \Slim\Slim();
 
-
 $app->post('/NewBooking',function() use ($app){
     $json = $app->request->getBody();
     $data = json_decode($json, true); // parse the JSON into an assoc. array
@@ -206,6 +205,37 @@ $app->post('/List_Room_BookingInfo',function() use ($app){
    }
  echoResponse(200,$response);
 });
+
+
+
+$app->post('/List_analytics',function() use ($app){
+    $json = $app->request->getBody();
+    $data = json_decode($json, true); // parse the JSON into an assoc. array
+    
+    $start_date=$data['start_date'];
+    $end_date = $data['end_date'];
+     
+   $dbRooms = new DbOperation();
+    //call analytics('2017-11-07','2017-11-07')
+    $resultRooms = $dbRooms->List_analytics("call analytics('".$start_date."','".$end_date."')");
+     
+    echoResponse(200,$resultRooms);
+return;
+   $response = array();
+   $response['error'] = false;
+   $response['data'] = array();
+   if ($resultRooms->num_rows > 0)  
+    {   $response["data"]=$resultRooms->fetch_all();
+      // $resultRooms->nextRowset();
+       //$response["data2"]=$resultRooms->fetch_all(MYSQLI_ASSOC);
+    } 
+     else {
+       $response['error'] = true;
+       $response['message'] = "No data found";
+   }
+ echoResponse(200,$response);
+});
+
 
 $app->post('/List_Disctinct_Prefix',function() use ($app){
      

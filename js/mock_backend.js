@@ -1,4 +1,5 @@
 (function() {
+var isFailed=false;
 
 	var storage = {
 		getData: function (url, params) {
@@ -22,46 +23,86 @@
 					deleteEvent(updatedEvent, eventsArray);
 					break;
 			}
-
+         
 			updateSchedulerData(data);
 			return JSON.stringify({action: command.action, tid: updatedEvent.id, sid: updatedEvent.id});
-		}
-	};
+		   
+}
+};
 
 	function insertEvent(event, dataset) {
 		
 		$.ajax({
             type: "POST", //rest Type
             dataType: 'json', //mispelled
-            data:JSON.stringify(event), //mispelled
-            url: "/event/api/v1/NewBooking",
+            url: "api/v1/CheckSession.php",
             async: false,
             contentType: "application/json; charset=utf-8",
             success: function (result) {
-				var dataResult=(result);  
-				data=result;
-				if(result.error==false)
-				{
-					var newId = event.id;// leave id unchanged
-					dataset.push(event);
-					dhtmlx.message({
-					type: "success",
-					text: "This Room Booked Successfully."
+				console.log(result); 
+			 if(result.error) {
+					   dhtmlx.alert("Operation Failed due to Session expired please login");
+					   isFailed=true;
+					   return;
+                //    $(location).attr('href','../login.php');
+				}
+				else{
+				 
+					$.ajax({
+						type: "POST", //rest Type
+						dataType: 'json', //mispelled
+						data:JSON.stringify(event), //mispelled
+						url: "api/v1/NewBooking",
+						async: false,
+						contentType: "application/json; charset=utf-8",
+						success: function (result) {
+							var dataResult=(result);  
+							data=result;
+							if(result.error==false)
+							{
+								var newId = event.id;// leave id unchanged
+								dataset.push(event);
+								dhtmlx.message({
+								type: "success",
+								text: "This Room Booked Successfully."
+							   });
+								return newId;
+								
+						  }
+						}
 				   });
-					return newId;
-					
-			  }
-            }
-	   });
-	}
+				
+				 }
+				 
+           }
+});
+
+
+		
+}
 
 	function updateEvent(event, dataset) {
-		 
+		$.ajax({
+            type: "POST", //rest Type
+            dataType: 'json', //mispelled
+            url: "api/v1/CheckSession.php",
+            async: false,
+            contentType: "application/json; charset=utf-8",
+            success: function (result) {
+				console.log(result); 
+			 if(result.error) {
+				dhtmlx.alert("Operation Failed due to Session expired please login");
+					   isFailed=true;
+					   return;
+                //    $(location).attr('href','../login.php');
+				}
+				else{
+					
 		$.ajax({
             type: "POST", //rest Type
             dataType: 'json', //mispelled
             data:JSON.stringify(event), //mispelled
-            url: "/event/api/v1/UpdateBooking",
+            url: "api/v1/UpdateBooking",
             async: false,
             contentType: "application/json; charset=utf-8",
             success: function (result) {
@@ -86,6 +127,12 @@
 			  }
             }
 	   });
+	}
+				 
+ }
+});
+
+	   
 
 
 		
@@ -93,6 +140,23 @@
 
 	function deleteEvent(event, dataset) {
 
+
+		$.ajax({
+            type: "POST", //rest Type
+            dataType: 'json', //mispelled
+            url: "api/v1/CheckSession.php",
+            async: false,
+            contentType: "application/json; charset=utf-8",
+            success: function (result) {
+				console.log(result); 
+			 if(result.error) {
+				dhtmlx.alert("Operation Failed due to Session expired please login");
+					   isFailed=true;
+					   return;
+                //    $(location).attr('href','../login.php');
+				}
+				else{
+				  
 		var data ={
 			bookingid:event.id
 		};
@@ -100,7 +164,7 @@
             type: "POST", //rest Type
             dataType: 'json', //mispelled
             data:JSON.stringify(data), //mispelled
-            url: "/event/api/v1/delete_bookings",
+            url: "api/v1/delete_bookings",
             async: false,
             contentType: "application/json; charset=utf-8",
             success: function (result) {
@@ -121,6 +185,13 @@
 			  }
             }
 	   });
+				
+				 }
+				 
+           }
+});
+
+
 	}
 
 	function updateSchedulerData(data) {

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 20, 2017 at 09:14 PM
+-- Generation Time: Nov 22, 2017 at 04:17 AM
 -- Server version: 10.1.13-MariaDB
 -- PHP Version: 7.0.6
 
@@ -19,6 +19,69 @@ SET time_zone = "+00:00";
 --
 -- Database: `roombooking`
 --
+
+DELIMITER $$
+--
+-- Procedures
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `analytics` (IN `sd` DATE, IN `ed` DATE)  BEGIN
+select count(*) total,rooms.prefix prefix from bookings inner join rooms on rooms.id = bookings.room
+where bookings.status like 'confirmed' and (
+(sd <=Date(bookings.start_date) and ed >=Date(bookings.end_date)) or
+(sd <= Date(bookings.start_date) and ed<= Date(bookings.end_date) and ed>=Date(bookings.start_date)) or
+( sd>= Date(bookings.start_date) and ed <= Date(bookings.end_date)) or
+(sd <=Date(bookings.end_date) and ed >=Date(bookings.end_date))
+)
+ group by rooms.prefix;
+
+select count(*) total,IF(referredby IS NULL or referredby = '', 'Misc', referredby) referredBy from bookings where status like 'confirmed' and (
+(sd <=Date(bookings.start_date) and ed >=Date(bookings.end_date)) or
+(sd <= Date(bookings.start_date) and ed<= Date(bookings.end_date) and ed>=Date(bookings.start_date)) or
+( sd>= Date(bookings.start_date) and ed <= Date(bookings.end_date)) or
+(sd <=Date(bookings.end_date) and ed >=Date(bookings.end_date))
+
+)
+ GROUP by referredby ;
+ 
+select distinct count(*) total,IF(referredby IS NULL or referredby = '', 'Misc', referredBy) referredBy
+ from bookings where (status like 'enquiry' or status like 'progress')  and (
+(sd <=Date(bookings.start_date) and ed >=Date(bookings.end_date)) or
+(sd <= Date(bookings.start_date) and ed<= Date(bookings.end_date) and ed>=Date(bookings.start_date)) or
+( sd>= Date(bookings.start_date) and ed <= Date(bookings.end_date)) or
+(sd <=Date(bookings.end_date) and ed >=Date(bookings.end_date))
+)
+GROUP by referredby ;
+
+select * from
+(select rooms.prefix loc,sum(
+case 
+when sd <=Date(bookings.start_date) and ed >=Date(bookings.end_date) then datediff(bookings.end_date,bookings.start_date)+1
+when sd <= Date(bookings.start_date) and ed<= Date(bookings.end_date) and ed>=Date(bookings.start_date) then datediff(ed,bookings.start_date)+1
+when sd>= Date(bookings.start_date) and ed <= Date(bookings.end_date) then datediff(ed,sd)+1
+when sd <=Date(bookings.end_date) and ed >=Date(bookings.end_date) then datediff(bookings.end_date,sd)+1
+
+else 0
+end 
+)total ,datediff(ed,sd)+1 max ,rooms.prefix from bookings inner join rooms on rooms.id = bookings.room 
+where bookings.status like 'confirmed' group by rooms.prefix 
+ )A cross join
+ (select count(roomno)totalRooms,prefix from rooms group by prefix)B on A.prefix=B.prefix;
+
+
+select concat(rooms.prefix,":",rooms.roomno)room,rooms.prefix loc,sum(
+case 
+when sd <=Date(bookings.start_date) and ed >=Date(bookings.end_date) then datediff(bookings.end_date,bookings.start_date)+1
+when sd <= Date(bookings.start_date) and ed<= Date(bookings.end_date) and ed>=Date(bookings.start_date) then datediff(ed,bookings.start_date)+1
+when sd>= Date(bookings.start_date) and ed <= Date(bookings.end_date) then datediff(ed,sd)+1
+when sd <=Date(bookings.end_date) and ed >=Date(bookings.end_date) then datediff(bookings.end_date,sd)+1
+else 0
+end 
+)total ,datediff(ed,sd)+1 max from bookings inner join rooms on rooms.id = bookings.room 
+where bookings.status like 'confirmed' group by room ;
+
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -53,7 +116,9 @@ CREATE TABLE `bookings` (
 --
 
 INSERT INTO `bookings` (`start_date`, `end_date`, `room`, `status`, `id`, `is_paid`, `Name`, `Email`, `ReferredBy`, `Category`, `room_type`, `bed_type`, `No_of_guests`, `No_of_male`, `No_of_female`, `Arrival_flight_details`, `Departure_flight_details`, `is_taxi`, `Description`) VALUES
-('2017-11-04 16:50:00', '2017-11-11 10:20:00', 4, 'Enquiry', 7, 1, 'Jino S', 'jinoshajiv@gmail.com', 'Jibin', 'Foreign (USA)', 'AC', 'Double', 5, 2, 3, 'Arival Flight', 'Dep Flight', 0, 'Desc');
+('2017-11-07 05:05:00', '2017-11-13 22:35:00', 2, 'Enquiry', 7, 1, 'Jino S', 'jinoshajiv@gmail.com', 'Jibin', 'Foreign (USA)', 'AC', 'Double', 5, 2, 3, 'Arival Flight', 'Dep Flight', 0, 'Desc'),
+('2017-11-05 18:55:00', '2017-11-10 01:20:00', 4, 'Confirmed', 8, 0, 'jino ', 'jino', '', 'Foreign (Europe)', 'undefined', 'undefined', 0, 0, 0, '', '', 0, ''),
+('2017-11-13 16:50:00', '2017-11-16 21:20:00', 4, 'Enquiry', 9, 0, 'del', 'ds', '', 'Foreign (Europe)', 'undefined', 'undefined', 0, 0, 0, '', '', 0, '');
 
 -- --------------------------------------------------------
 
@@ -94,7 +159,7 @@ CREATE TABLE `login_details` (
 --
 
 INSERT INTO `login_details` (`id`, `username`, `password`, `role`) VALUES
-(1, 'Admin', 'qwert', 'admin'),
+(1, 'Admin', '123', 'admin'),
 (2, 'Reception', '12345', 'user');
 
 -- --------------------------------------------------------
@@ -210,7 +275,7 @@ ALTER TABLE `room_types`
 -- AUTO_INCREMENT for table `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 --
 -- AUTO_INCREMENT for table `booking_statuses`
 --
