@@ -112,45 +112,58 @@ class DbOperation
     public function List_analytics($sql)
     {
             
-            $result = $this->con->query($sql);
+           // $result = $this->con->query($sql);
             $response=array();
              $response['datas']=array();
             $tempData=array();
             $tempData['results']=array();
-           do
-           {
-           // Store first result set
-            if ($result=mysqli_store_result($this->con))
-              {
-                $tempData['results']=$result->fetch_all(MYSQLI_ASSOC);
-                mysqli_free_result($result);
-                array_push($response,$tempData['results']);
-              }
+        //    do while (mysqli_next_result($this->con))
+        //    {
+        //      $result=mysqli_use_result($this->con);
+             
+        //    // Store first result set
+        //       {
+        //         $tempData['results']=$result->fetch_all(MYSQLI_ASSOC);
+        //         mysqli_free_result($result);
+        //         array_push($response,$tempData['results']);
+        //       }
+             
+        //     }
+            if (mysqli_multi_query($this->con,$sql)){
+            do{
+                if ($result = mysqli_store_result($this->con)){
+                  // while ($row = mysqli_fetch_row($result)){
+                    $tempData['results']=$result->fetch_all(MYSQLI_ASSOC);
+                    array_push($response,$tempData['results']);
+                    //  print $row[0];
+                     // print "\n";
+                 //  }
+                }
+             }while (mysqli_next_result($this->con));
+             
             }
-             while (mysqli_next_result($this->con));
-
 return  $response;
-            $response["data"]=$result->fetch_all(MYSQLI_ASSOC);
+            $response["0"]=$result->fetch_all(MYSQLI_ASSOC);
             mysqli_free_result($result);
             mysqli_next_result($this->con);
             $result2 = mysqli_use_result($this->con);
             
-             $response["data2"]=$result2->fetch_all(MYSQLI_ASSOC);
+             $response["1"]=$result2->fetch_all(MYSQLI_ASSOC);
              
              mysqli_free_result($result2);
              mysqli_next_result($this->con);
             $result2 = mysqli_use_result($this->con);
-            $response["data3"]=$result2->fetch_all(MYSQLI_ASSOC);
+            $response["2"]=$result2->fetch_all(MYSQLI_ASSOC);
             
             mysqli_free_result($result2);
             mysqli_next_result($this->con);
            $result2 = mysqli_use_result($this->con);
-           $response["data4"]=$result2->fetch_all(MYSQLI_ASSOC);
+           $response["3"]=$result2->fetch_all(MYSQLI_ASSOC);
             
            mysqli_free_result($result2);
            mysqli_next_result($this->con);
           $result2 = mysqli_use_result($this->con);
-          $response["data5"]=$result2->fetch_all(MYSQLI_ASSOC);
+          $response["4"]=$result2->fetch_all(MYSQLI_ASSOC);
            
           
              $this->con->close();

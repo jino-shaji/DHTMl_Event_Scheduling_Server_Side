@@ -35,12 +35,12 @@
                 
                             <div class="col-xs-4">
                                 <strong>From Date</strong>
-                                <input type="text" placeholder="yyyy-mm-dd" id="fromDate" class="form-control" required name="fromDate"><br>
+                                <input type="text" placeholder="yyyy-mm-dd" id="start_date" class="form-control" required name="start_date"><br>
                             </div>
                 
                             <div class="col-xs-4">
                                 <strong>To Date</strong>
-                                <input type="text" placeholder="yyyy-mm-dd" id="toDate" class="form-control" required name="toDate"><br>
+                                <input type="text" placeholder="yyyy-mm-dd" id="end_date" class="form-control" required name="end_date"><br>
                             </div>
                   <div class="col-xs-2">
                       <br>
@@ -55,15 +55,21 @@
         </div>
 <script>
     $(function(){
+       
         $("#filterForm").unbind('submit').bind('submit',function (){
       event.preventDefault();
       $(".sub").prop('disabled',true);
+      var data={
+        start_date:$("#start_date").val(),
+        end_date:$("#end_date").val(),
+      }
     $.ajax({
-            url: "",
-            type: '',
-            data: $("#formNewItem").serialize(),
+            url: "api/v1/List_analytics",
+            type: 'POST',
+            data:JSON.stringify(data),
             success: function (data, textStatus, jqXHR) {
-                
+                console.log(data);
+                $(".sub").prop('disabled',false);
             },
             error: function (jqXHR, textStatus, errorThrown) {
                         

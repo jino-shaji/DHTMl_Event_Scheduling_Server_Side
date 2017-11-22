@@ -213,7 +213,7 @@ var isFailed=false;
 		$.ajax({
             type: "POST", //rest Type
             dataType: 'json', //mispelled
-            url: "/event/api/v1/list_roomData",
+            url: "api/v1/list_roomData",
             async: false,
             contentType: "application/json; charset=utf-8",
             success: function (result) {
